@@ -1,0 +1,85 @@
+@import "vars.css";
+
+body, html {
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+body {
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+header {
+	height: var(--nav-height);
+	width: 100vw;
+	display: block;
+	overflow: hidden;
+	position: relative;
+	box-sizing: border-box;
+	border-bottom: 1px solid var(--grey-dark);
+}
+
+header > div {
+	float: left;
+}
+
+header > div:nth-child(1) {
+	height: var(--nav-height);
+	width: var(--aside-width);
+}
+
+header > div:nth-child(1) > img {
+	height: 100%;
+	float: left;
+}
+
+header > div:nth-child(2) {
+	height: var(--nav-height);
+	width: var(--main-width);
+}
+
+header > div:nth-child(2) > nav {
+	height: var(--nav-height);
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+}
+
+header > div:nth-child(2) > nav > span {
+	padding: 0.8% 2%;
+	display: block;
+	float: left;
+	text-transform: uppercase;
+}
+
+main, aside {
+	height: calc(100vh - var(--nav-height));
+	box-sizing: border-box;
+}
+
+aside {
+	height: calc(100vh - var(--nav-height));
+	width: var(--aside-width);
+	border-right: 1px solid var(--grey-dark);
+	float: left;
+}
+
+aside + main {
+	width: var(--main-width);
+	border-right: 1px solid var(--grey-dark);
+	float: left;
+}
+
+main + aside {
+	float: right;
+}
+
+nav > span.selected {
+	border-radius: 12px;
+	background-color: var(--grey-med);
+}
