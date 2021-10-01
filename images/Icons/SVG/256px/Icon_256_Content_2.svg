@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 256 256" style="enable-background:new 0 0 256 256;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+</style>
+<g>
+	<g>
+		<circle cx="128" cy="128" r="128"/>
+		<g>
+			<g>
+				<g>
+					<polygon class="st0" points="156.38,131.51 156.38,145.38 193.05,145.38 193.05,178.17 120.54,178.17 120.54,162.31 
+						106.67,162.31 106.67,192.04 206.91,192.04 206.91,131.51 					"/>
+				</g>
+				<path class="st0" d="M106.67,63.96v60.53h100.24V63.96H106.67z M120.54,110.62V77.83h72.5v32.79H120.54z"/>
+				<g>
+					<polygon class="st0" points="135.46,131.55 135.46,143.35 62.95,143.35 62.95,110.56 99.62,110.56 99.62,96.69 49.09,96.69 
+						49.09,157.22 149.33,157.22 149.33,131.55 					"/>
+					<rect x="111.96" y="96.69" class="st0" width="3.28" height="13.87"/>
+					<rect x="135.46" y="115.92" class="st0" width="13.87" height="3.28"/>
+				</g>
+				<g>
+					<path class="st0" d="M106.67,63.96v60.53h100.24V63.96H106.67z M120.54,110.62V77.83h72.5v32.79H120.54z"/>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>
