@@ -1,0 +1,150 @@
+aside > div.character {
+	height: 8vh;
+	border-bottom: 1px solid var(--grey-dark);
+	box-sizing: border-box;
+	display: flex;
+}
+
+aside > div.character > div.avatar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+aside > div.character > div.avatar > img {
+	height: 5vh;
+	width: 5vh;
+	border-radius: 50%;
+	border: 1px solid var(--grey-light);
+}
+
+aside > div.character > div.xp-progress {
+	flex: 1;
+	padding-left: 4%;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+}
+
+aside > div.character > div.xp-progress > span {
+	margin: 0 auto;
+	height: 30%;
+	padding-top: 1vh;
+	font-weight: 200;
+	display: block;
+	text-align: center;
+	text-transform: uppercase;
+	text-shadow: 1px 1px var(--grey-dark);
+}
+
+aside > div.character > div.xp-progress > div {
+	display: flex;
+	align-self: stretch;
+}
+
+aside > div.character > div.xp-progress > div > span {
+	font-size: .7em;
+	padding-right: 2%;
+	text-align: center;
+	vertical-align: middle;
+	flex: .1;
+}
+
+aside > div.character > div.xp-progress > div > progress {
+	flex: 1;
+	display: block;
+	padding-top: 4px;
+}
+
+aside > div.character > div.xp-progress > div.money {
+
+}
+
+aside > div.character > div.xp-progress > div.money > label {
+	font-family: 'Courier New', Courier, monospace;
+	font-size: .7em;
+	display: flex;
+	align-items: center;
+}
+
+progress[value] {
+	appearance: none;
+	-webkit-appearance: none;
+	border-radius: 24px;
+	height: 12px;
+}
+
+progress[value]::-webkit-progress-bar {
+	border-radius: 24px;
+}
+
+progress[value]::-webkit-progress-value {
+	height: 8px;
+	border-radius: 24px;
+	box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
+	background-image: -webkit-linear-gradient(45deg, transparent, transparent 33%, rgba(0, 0, 0, 0.1) 33%, rgba(0, 0, 0, 0.1) 66%, transparent 66%), -webkit-linear-gradient(top, rgba(255, 255, 255, .5), rgba(0, 0, 0, .3)), -webkit-linear-gradient(left, #673ab7, #6518ef);
+	background-size: 25px 12px, 100% 100%, 100% 100%;
+}
+
+aside > div.social-icons {
+	height: 14px;
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+aside > div.social-icons i {
+	border: 1px solid white;
+	width: 10px;
+	height: 10px;
+	margin-left: 4px;
+	border-radius: 12px;
+}
+
+aside > .ads {
+	border: 1px solid var(--grey-dark);
+	background-color: var(--grey-ultradark);
+	margin-top: 4vh;
+	height: 40vh;
+	border-radius: 4px;
+}
+
+aside > .ads > img {
+	width: 100%;
+}
+
+aside > .ads > .carousel-switcher {
+	width: 100%;
+	display: flex;
+	flex-flow: column;
+	justify-content: stretch;
+	align-items: center;
+}
+
+aside > .ads > .carousel-switcher > .arrows {
+	padding: 1vh 0;
+	display: flex;
+	flex-flow: row;
+	align-items: space-between;
+}
+
+aside > .ads > .carousel-switcher > .arrows > i {
+	padding: 0 2vw;
+	cursor: pointer;
+}
+
+aside > .ads > .carousel-switcher > .indicators {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.indicators > i {
+	margin: 0 .5vw;
+	height: 5px;
+	width: 5px;
+	border: 1px solid white;
+	border-radius: 50%;
+}

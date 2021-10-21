@@ -41,6 +41,8 @@ header > div:nth-child(1) > img {
 header > div:nth-child(2) {
 	height: var(--nav-height);
 	width: var(--main-width);
+	padding-left: 2vw;
+	box-sizing: border-box;
 }
 
 header > div:nth-child(2) > nav {
@@ -51,10 +53,11 @@ header > div:nth-child(2) > nav {
 }
 
 header > div:nth-child(2) > nav > span {
-	padding: 0.8% 2%;
+	padding: 4px 12px;
 	display: block;
 	float: left;
 	text-transform: uppercase;
+	font-weight: 200;
 }
 
 main, aside {
@@ -67,11 +70,13 @@ aside {
 	width: var(--aside-width);
 	border-right: 1px solid var(--grey-dark);
 	float: left;
+	padding: 0 2vw;
 }
 
-aside + main {
-	width: var(--main-width);
+aside ~ main {
+	width: calc(var(--main-width) - 2vw);
 	border-right: 1px solid var(--grey-dark);
+	margin-right: 2vw;
 	float: left;
 }
 
@@ -80,6 +85,34 @@ main + aside {
 }
 
 nav > span.selected {
-	border-radius: 12px;
+	border-radius: 8px;
 	background-color: var(--grey-med);
+	border: 1px solid var(--grey-light);
+	box-sizing: content-box;
+}
+
+main:not(.active) { display: none; }
+
+main > h2, main > h3 {
+	font-weight: 200;
+	margin: 2vh 0 1vh 2vw;
+}
+
+article {
+	margin-left: 2vw;
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+article > img {
+	width: 60%;
+	object-fit: scale-down;
+}
+
+article > div {
+	padding-left: 2vw;
+}
+
+article > div > h4 {
+	margin-top: 0;
 }

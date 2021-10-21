@@ -17,35 +17,116 @@
 			</div>
 			<div>
 				<nav>
-					<span class="selected">home</span>
-					<span>news</span>
-					<span>events</span>
-					<span>games</span>
-					<span>tournaments</span>
-					<span>teams</span>
+					<span name="home" class="selected">home</span>
+					<span name="news">news</span>
+					<span name="events">events</span>
+					<span name="games">games</span>
+					<span name="tournaments">tournaments</span>
+					<span name="teams">teams</span>
 				</nav>
 			</div>	
 		</header>
+
 		<aside>
 			<div class="character">
-				<div>
+				<div class="avatar">
 					<img src="images/avatars/kenneth.jpg">
 				</div>
-				<div>
+				<div class="xp-progress">
 					<span>kenetsu</span>
 					<div>
 						<span>XP</span>
 						<progress max="100" value="46"></progress>
 					</div>
+					<div class="money">
+						<span>
+							<img src="images/Icons/SVG/48px/xp_money_3.svg">
+						</span>
+						<label class="money-numeric">12,032</label>
+					</div>
+				</div>
+			</div>
+			<div class="social-icons">
+				<i></i>
+				<i></i>
+				<i></i>
+				<i></i>
+				<i></i>
+			</div>
+			<div class="search">
+				<input type="text" name="search-field" placeholder="search"/>
+			</div>
+			<div class="ads">
+				<img src="images/placeholder/ad-1.png">
+				<div class="carousel-switcher">
+					<div class="arrows">
+						<i>&lt;</i>
+						<i>&gt;</i>
+					</div>
+					<div class="indicators">
+						<i></i>
+						<i></i>
+						<i></i>
+					</div>
 				</div>
 			</div>
 		</aside>
-		<main>
 
+		<main name="home" class="active">
+			<div class="content-creator">
+	
+				<div>
+					<div class="avatar-selector">
+						<img src="images/avatars/kenneth.jpg">
+
+						<div class="content-type-selector">
+							<span class="selected">social</span>
+							<span>news</span>
+							<span>events</span>
+							<span>content</span>
+						</div>
+					</div>
+					<textarea name="content-text"></textarea>
+					<div class="button-row">
+						<span class="button" name="send">
+							<span>SEND</span><img src="images/Icons/SVG/256px/post_comment_send_1.svg">
+						</span>
+					</div>
+				</div>
+				<div>
+
+				</div>
+			</div>
+			<div class="content">
+
+			</div>
+			<div class="content"></div>
 		</main>
-		<aside>
 
-		</aside>
-		<script src="" async defer></script>
+		<main name="news">
+			<h2>NEWS</h2>
+			<h3>Featured News</h3>
+			<article>
+				<img src="images/placeholder/call-of-duty.png">
+				<div>
+					<h4>Call of Duty Advanced Warfare</h4>
+					<p>CoD Advanced Warfare is Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam rem repellendus ut deserunt officiis eius esse, explicabo itaque, perferendis fugiat tempora, quam omnis ex nihil voluptatem consequuntur? Necessitatibus, temporibus distinctio?</p>
+				</div>
+			</article>
+		</main>
+
+		<main name="events">
+		
+		</main>
+
+		<main name="tournaments">
+		
+		</main>
+
+		<main name="teams">
+		
+		</main>
+
+		<script src="js/ignyte.js" async defer></script>
 	</body>
 </html>
