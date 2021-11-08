@@ -1,4 +1,5 @@
 import { Auth } from "./auth.js";
+import { Net } from "./sdk/net.js";
 class Ignyte {
     static init_temp_db() {
         const DBOpenRequest = window.indexedDB.open("news", 1);
@@ -19,6 +20,7 @@ class Ignyte {
             Ignyte.progress_container.classList.add('hidden');
             Ignyte.auth_login.classList.remove('hidden');
         }
+        Net.get('/api/ping').then((response) => { alert(response); });
     }
     static on_click_nav(item) {
         Ignyte.nav_items.forEach((item) => item.classList.remove('selected'));
@@ -29,14 +31,6 @@ class Ignyte {
     static on_click_con_type(item) {
         Ignyte.c_type_selector_items.forEach((item) => item.classList.remove('selected'));
         item.classList.add('selected');
-    }
-    static on_sign_in_google(user) {
-        var profile = user.getBasicProfile();
-        debugger;
-        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-        console.log('Name: ' + profile.getName());
-        console.log('Image URL: ' + profile.getImageUrl());
-        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
     }
     static update_avatars() {
         let profile = localStorage.getItem('gprofile');

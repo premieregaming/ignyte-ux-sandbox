@@ -9,7 +9,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="icon" href="images/logo_main.png">
-		<meta name="google-signin-client_id" content="1014812002971-02npctoj1h28lsdnj6heh31ljmgettju.apps.googleusercontent.com">
+		<meta name="google-signin-client_id" content="1014812002971-lj7hlbferq8qarbc7922po6q6grrrvrk.apps.googleusercontent.com">
 	</head>
 	<body>
 		<dialog class="auth inactive">
@@ -50,7 +50,7 @@
 					</div>
 				</div>
 				<div class="auth-login hidden">
-					<div class="g-signin2" data-onsuccess="Ignyte.on_sign_in_google"></div>
+					<div class="g-signin2" data-onsuccess="on_sign_in_google"></div>
 				</div>
 			</div>
 			<div class="social-icons">
@@ -136,5 +136,10 @@
 
 		<script type="module" src="js/ignyte.js" async defer></script>
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script>
+			function on_sign_in_google(user) { 
+				Ignyte.on_sign_in_google(user) 
+			}
+		</script>
 	</body>
 </html>
