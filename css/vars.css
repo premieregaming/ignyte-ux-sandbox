@@ -6,7 +6,6 @@
 	--grey-med: rgb(42, 47, 54);
 	--grey-light: rgb(152, 152, 152);
 
-
 	--nav-height: 10vh;
 	--aside-width: 30vw;
 	--main-width: calc(100vw - var(--aside-width));

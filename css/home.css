@@ -3,7 +3,6 @@ div.content-creator {
 }
 
 div.content-creator > div {
-
 	background: var(--grey-dark);
 	border: 8px solid #000000;
 	padding: 1vh;

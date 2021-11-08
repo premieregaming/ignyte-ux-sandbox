@@ -9,8 +9,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="css/style.css">
 		<link rel="icon" href="images/logo_main.png">
+		<meta name="google-signin-client_id" content="1014812002971-02npctoj1h28lsdnj6heh31ljmgettju.apps.googleusercontent.com">
 	</head>
 	<body>
+		<dialog class="auth inactive">
+
+		</dialog>
 		<header>
 			<div>
 				<img src="./images/logo_main.png">
@@ -30,9 +34,9 @@
 		<aside>
 			<div class="character">
 				<div class="avatar">
-					<img src="images/avatars/kenneth.jpg">
+					<img>
 				</div>
-				<div class="xp-progress">
+				<div class="xp-progress hidden">
 					<span>kenetsu</span>
 					<div>
 						<span>XP</span>
@@ -40,10 +44,13 @@
 					</div>
 					<div class="money">
 						<span>
-							<img src="images/Icons/SVG/48px/xp_money_3.svg">
+							<img>
 						</span>
 						<label class="money-numeric">12,032</label>
 					</div>
+				</div>
+				<div class="auth-login hidden">
+					<div class="g-signin2" data-onsuccess="Ignyte.on_sign_in_google"></div>
 				</div>
 			</div>
 			<div class="social-icons">
@@ -127,6 +134,7 @@
 		
 		</main>
 
-		<script src="js/ignyte.js" async defer></script>
+		<script type="module" src="js/ignyte.js" async defer></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
 	</body>
 </html>

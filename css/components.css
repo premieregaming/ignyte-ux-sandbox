@@ -18,3 +18,11 @@ div.search > input {
 	letter-spacing: .1em;
 	padding-left: 6px;
 }
+
+dialog.inactive {
+	display: none;
+}
+
+.hidden {
+	display: none !important;
+}

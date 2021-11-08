@@ -18,13 +18,18 @@ aside > div.character > div.avatar > img {
 	border: 1px solid var(--grey-light);
 }
 
-aside > div.character > div.xp-progress {
+aside > div.character > div.xp-progress,
+aside > div.character > div.auth-login {
 	flex: 1;
 	padding-left: 4%;
 	box-sizing: border-box;
 	display: flex;
 	flex-flow: column;
 	align-items: center;
+}
+
+aside > div.character > div.auth-login {
+	justify-content: center;
 }
 
 aside > div.character > div.xp-progress > span {
