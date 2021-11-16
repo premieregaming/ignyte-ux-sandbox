@@ -32,6 +32,7 @@
     "fastify-static": "^4.5.0",
     "google-auth-library": "^7.10.2",
     "nest-router": "^1.0.9",
+    "pg": "^8.7.1",
     "point-of-view": "^4.15.2",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",

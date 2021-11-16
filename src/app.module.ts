@@ -6,6 +6,10 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { TempController } from './temp/temp.controller';
 import { TempModule } from './temp/temp.module';
+import { AccountController } from './account/account.controller';
+import { AccountModule } from './account/account.module';
+import { DatabaseService } from './database/database.service';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
     imports: [
@@ -15,9 +19,11 @@ import { TempModule } from './temp/temp.module';
         }),
         AuthModule,
         TempModule,
+        AccountModule,
+        DatabaseModule,
     ],
-    controllers: [AppController, TempController],
-    providers: [AppService],
+    controllers: [AppController, TempController, AccountController],
+    providers: [AppService, DatabaseService],
 })
 
 export class AppModule {}

@@ -3,6 +3,7 @@
 cd ux
 tsc
 cd ..
+rm -rf dist/ux
 mkdir dist/ux
 cp -r ux/css dist/ux/css
 cp -r ux/images dist/ux/images
