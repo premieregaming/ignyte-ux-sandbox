@@ -26,7 +26,7 @@ import path = require('path/posix');
     AccountModule,
     DatabaseModule,
   ],
-  controllers: [AppController, TempController, AccountController],
+  controllers: [AppController, TempController, AccountController, DatabaseController],
   providers: [AppService, DatabaseService],
 })
 

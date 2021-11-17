@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
 import { GoogleAuthDto, GoogleTokenVerifyDto } from './dto/google-auth.dto';
-// import { DatabaseController } from '../database/database.controller';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class AuthService {
 
-	// constructor(private readonly database: DatabaseController) {}
+	constructor(private readonly database: DatabaseService) {}
 
 	static google_client_id = '1048890093326-a8kisu4dulmt0hu5606s9r0hhs4847ci.apps.googleusercontent.com'
 	static client = new OAuth2Client(AuthService.google_client_id);
@@ -31,9 +31,10 @@ export class AuthService {
 
 	async googleAuth(auth: GoogleAuthDto) {
 
-		let sql = 'select id from users where google_id = $1'
-		// this.database.query(sql).then((res) => {
-		// 	debugger
-		// })
+		let sql = 'select user_id from google_user_accounts where google_id = $1'
+		this.database.query(sql, [auth.id]).then((res) => {
+			let a = res
+			debugger
+		})
 	}
 }

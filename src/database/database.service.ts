@@ -16,15 +16,20 @@ export class DatabaseService {
 		this.client.connect();
 	}
 
-	public query(sql: string): Promise<any> {
+	public query(sql: string, values: Array<any>): Promise<any> {
 
 		return new Promise((resolve, reject) => {
 
-			this.client.query(sql, (err, res) => {
+			try {
+				this.client.query(sql, values, (err, res) => {
 
-				if (err) return reject(err)
-				return res.rows
-			})
+					if (err) return reject(err)
+					resolve(res.rows)
+				})
+			}
+			catch (e) {
+				reject(e)
+			}
 		})
 	}
 }

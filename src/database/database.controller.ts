@@ -6,8 +6,8 @@ export class DatabaseController {
 
 	constructor(private readonly dataService: DatabaseService) { }
 
-	query(sql: string) {
+	query(sql: string, values: Array<any>) {
 
-		return this.dataService.query(sql)
+		return this.dataService.query(sql, values)
 	}
 }

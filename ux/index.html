@@ -134,11 +134,14 @@
 		
 		</main>
 
-		<script type="module" src="js/ignyte.js" async defer></script>
+		<script type="module" src="js/ignyte.js"></script>
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 		<script>
+			
+			function handle_google_signin(user) { Ignyte.on_sign_in_google(user) }
 			function on_sign_in_google(user) { 
-				Ignyte.on_sign_in_google(user) 
+				if (!Ignyte) { window.setTimeout(handle_google_signin.bind(this, user), 1000)}
+				else { handle_google_signin(user)}  
 			}
 		</script>
 	</body>
