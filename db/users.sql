@@ -10,7 +10,8 @@ CREATE TABLE public.users (
 );
 
 CREATE TABLE public.google_user_accounts (
-	id character varying not null,
+	user_id character varying not null,
+	google_id character varying not null,
 	email character varying UNIQUE NOT NULL,
 	first_name character varying NOT NULL,
 	last_name character varying NOT NULL,
