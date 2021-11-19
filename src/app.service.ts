@@ -4,11 +4,11 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AppService {
 
-  getHello(): string {
-    return "Asdf"
-  }
+    getHello(): string {
+      return "Asdf"
+    }
 
-  ping(): string {
-    return "pong"
-  }
+    ping(): string {
+      return "pong"
+    }
 }

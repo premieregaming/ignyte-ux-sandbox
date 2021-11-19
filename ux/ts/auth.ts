@@ -31,6 +31,7 @@ class GoogleAuthData {
 export class Auth {
 
 	static get is_authenticated() { return false }
+	static authenticated_user_id = null;
 	static creds: {}
 
 	static on_sign_in_google(user) {
@@ -57,7 +58,9 @@ export class Auth {
 
 		Net.post('api/auth/google-auth', data).then((response) => {
 
-			debugger
+			if (response) { 
+				Auth.authenticated_user_id = response 
+			}
 		})
 	}
 }

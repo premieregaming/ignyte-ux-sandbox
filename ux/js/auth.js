@@ -32,7 +32,10 @@ export class Auth {
     }
     static auth_with_google(data) {
         Net.post('api/auth/google-auth', data).then((response) => {
-            debugger;
+            if (response) {
+                Auth.authenticated_user_id = response;
+            }
         });
     }
 }
+Auth.authenticated_user_id = null;
