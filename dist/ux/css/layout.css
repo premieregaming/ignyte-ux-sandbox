@@ -1,0 +1,118 @@
+@import "vars.css";
+
+body, html {
+	height: 100vh;
+	width: 100vw;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+body {
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+header {
+	height: var(--nav-height);
+	width: 100vw;
+	display: block;
+	overflow: hidden;
+	position: relative;
+	box-sizing: border-box;
+	border-bottom: 1px solid var(--grey-dark);
+}
+
+header > div {
+	float: left;
+}
+
+header > div:nth-child(1) {
+	height: var(--nav-height);
+	width: var(--aside-width);
+}
+
+header > div:nth-child(1) > img {
+	height: 100%;
+	float: left;
+}
+
+header > div:nth-child(2) {
+	height: var(--nav-height);
+	width: var(--main-width);
+	padding-left: 2vw;
+	box-sizing: border-box;
+}
+
+header > div:nth-child(2) > nav {
+	height: var(--nav-height);
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+}
+
+header > div:nth-child(2) > nav > span {
+	padding: 4px 12px;
+	display: block;
+	float: left;
+	text-transform: uppercase;
+	font-weight: 200;
+}
+
+main, aside {
+	height: calc(100vh - var(--nav-height));
+	box-sizing: border-box;
+}
+
+aside {
+	height: calc(100vh - var(--nav-height));
+	width: var(--aside-width);
+	border-right: 1px solid var(--grey-dark);
+	float: left;
+	padding: 0 2vw;
+}
+
+aside ~ main {
+	width: calc(var(--main-width) - 2vw);
+	border-right: 1px solid var(--grey-dark);
+	margin-right: 2vw;
+	float: left;
+}
+
+main + aside {
+	float: right;
+}
+
+nav > span.selected {
+	border-radius: 8px;
+	background-color: var(--grey-med);
+	border: 1px solid var(--grey-light);
+	box-sizing: content-box;
+}
+
+main:not(.active) { display: none; }
+
+main > h2, main > h3 {
+	font-weight: 200;
+	margin: 2vh 0 1vh 2vw;
+}
+
+article {
+	margin-left: 2vw;
+	display: flex;
+	flex-flow: row nowrap;
+}
+
+article > img {
+	width: 60%;
+	object-fit: scale-down;
+}
+
+article > div {
+	padding-left: 2vw;
+}
+
+article > div > h4 {
+	margin-top: 0;
+}
