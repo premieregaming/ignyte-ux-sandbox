@@ -1,3 +1,4 @@
+import { Account } from "./account.js";
 import { Net } from "./sdk/net.js";
 class SimpleProfileInterface {
     constructor(name, image_url) {
@@ -34,6 +35,7 @@ export class Auth {
         Net.post('api/auth/google-auth', data).then((response) => {
             if (response) {
                 Auth.authenticated_user_id = response;
+                Account.get_account();
             }
         });
     }

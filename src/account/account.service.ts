@@ -22,4 +22,15 @@ export class AccountService {
 			})
 		})
 	}
+
+	async get_account_data(id: string) {
+
+		let sql = 'select id, email, first_name, last_name, profile_photo, google_account_id, fb_account_id, create_timestamp from users where id = $1'
+		let values = [id]
+		
+		return new Promise((resolve, reject) => {
+
+			this.db.query(sql, values).then((res) => { resolve(res[0]) })
+		})
+	}
 }

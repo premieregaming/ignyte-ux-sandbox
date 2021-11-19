@@ -1,5 +1,6 @@
+import { Account } from "./account.js";
 import { Auth } from "./auth.js";
-class Ignyte {
+export class Ignyte {
     static init_temp_db() {
         const DBOpenRequest = window.indexedDB.open("news", 1);
         DBOpenRequest.onsuccess = function (event) { Ignyte.db = DBOpenRequest.result; };
@@ -33,10 +34,15 @@ class Ignyte {
     }
     static on_sign_in_google(user) { Auth.on_sign_in_google(user); }
     static update_avatars() {
-        let profile = localStorage.getItem('gprofile');
-        document.querySelectorAll('avatar > img').forEach(image => {
-            image.src = Ignyte.profile_img_url;
+        document.querySelectorAll('.user-avatar-photo').forEach(image => {
+            image.src = Account.data.profile_photo;
         });
+    }
+    static render_account() {
+        Ignyte.update_avatars();
+        document.querySelector('#username').innerHTML = Account.data.first_name;
+        Ignyte.auth_login.classList.add('hidden');
+        Ignyte.progress_container.classList.remove('hidden');
     }
 }
 Ignyte.init();

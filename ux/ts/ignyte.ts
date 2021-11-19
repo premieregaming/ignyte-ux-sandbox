@@ -1,7 +1,8 @@
+import { Account } from "./account.js"
 import { Auth } from "./auth.js"
 import { Net } from "./sdk/net.js"
 
-class Ignyte {
+export class Ignyte {
 
 	static nav: HTMLElement
 	static nav_items: NodeListOf<HTMLElement>
@@ -71,10 +72,17 @@ class Ignyte {
 
 	static update_avatars() {
 
-		let profile = localStorage.getItem('gprofile')
-		document.querySelectorAll('avatar > img').forEach(image => {
-			(<HTMLImageElement>image).src = Ignyte.profile_img_url
+		document.querySelectorAll('.user-avatar-photo').forEach(image => {
+			(<HTMLImageElement>image).src = Account.data.profile_photo
 		})
+	}
+
+	static render_account() {
+
+		Ignyte.update_avatars()
+		document.querySelector('#username').innerHTML = Account.data.first_name
+		Ignyte.auth_login.classList.add('hidden')
+		Ignyte.progress_container.classList.remove('hidden')
 	}
 }
 
