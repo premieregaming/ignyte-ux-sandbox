@@ -13,7 +13,7 @@ import { TempController } from './temp/temp.controller';
 import { AccountController } from './account/account.controller';
 import { AccountService } from './account/account.service';
 import { join } from 'path';
-import path = require('path/posix');
+import path = require('path');
 
 @Module({
   imports: [
