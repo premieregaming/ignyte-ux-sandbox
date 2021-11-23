@@ -37,11 +37,17 @@ export class AuthService {
 				let sql = 'select user_id from google_user_accounts where google_id = $1'
 				this.database.query(sql, [data.id]).then((res) => {
 
+					console.log(res)
+
 					if (res.length == 0) { this.account.create_google_acct(data).then((res) => resolve(res)) }
-					else { resolve(res[0].user_id) }
+					else { 
+						
+						resolve(res[0].user_id) 
+					}
 				})
 			}
 			catch (e) {
+				console.log(e)
 				return false;
 			}
 		})
