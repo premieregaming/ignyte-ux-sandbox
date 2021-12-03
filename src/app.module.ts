@@ -12,6 +12,29 @@ import { AccountModule } from './account/account.module';
 import { TempController } from './temp/temp.controller';
 import { AccountController } from './account/account.controller';
 import { AccountService } from './account/account.service';
+import { ProfileModule } from './profile/profile.module';
+import { EventsModule } from './events/events.module';
+import { NewsModule } from './news/news.module';
+import { GamesModule } from './games/games.module';
+import { ProfileController } from './profile/profile.controller';
+import { NewsController } from './news/news.controller';
+import { GamesController } from './games/games.controller';
+import { EventsController } from './events/events.controller';
+import { ProfileService } from './profile/profile.service';
+import { EventsService } from './events/events.service';
+import { NewsService } from './news/news.service';
+import { GamesService } from './games/games.service';
+import { TeamsController } from './teams/teams.controller';
+import { TeamsModule } from './teams/teams.module';
+import { TeamsService } from './teams/teams.service';
+import { ChatController } from './chat/chat.controller';
+import { ChatModule } from './chat/chat.module';
+import { ContentController } from './content/content.controller';
+import { ContentService } from './content/content.service';
+import { ContentModule } from './content/content.module';
+import { AdsModule } from './ads/ads.module';
+import { AdsController } from './ads/ads.controller';
+import { AdsService } from './ads/ads.service';
 import { join } from 'path';
 import path = require('path');
 
@@ -26,9 +49,41 @@ import path = require('path');
     TempModule,
     AccountModule,
     DatabaseModule,
+    ProfileModule,
+    EventsModule,
+    NewsModule,
+    GamesModule,
+    TeamsModule,
+    ChatModule,
+    ContentModule,
+    AdsModule
   ],
-  controllers: [AppController, TempController, AccountController, DatabaseController],
-  providers: [AppService, AccountService, DatabaseService],
+  controllers: [
+    AppController,
+    TempController,
+    AccountController,
+    DatabaseController,
+    ProfileController,
+    EventsController,
+    NewsController,
+    GamesController,
+    TeamsController,
+    ChatController,
+    ContentController,
+    AdsController
+  ],
+  providers: [
+    AppService,
+    AccountService,
+    DatabaseService,
+    ProfileService,
+    EventsService,
+    NewsService,
+    GamesService,
+    TeamsService,
+    ContentService,
+    AdsService
+  ],
 })
 
 export class AppModule { }

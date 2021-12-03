@@ -6,7 +6,7 @@ export class AccountService {
 
 	constructor(private readonly db: DatabaseService) { }
 	
-	async create_google_acct(g_user: GoogleAuthDto) {
+	async create_google_acct(g_user: GoogleAuthDto): Promise<any> {
 
 		let user_sql = 'insert into users (email, first_name, last_name, google_account_id, profile_photo) values ($1, $2, $3, $4, $5) returning id'
 		let google_sql = 'insert into google_user_accounts (user_id, google_id, email, first_name, last_name, profile_photo) values ($1, $2, $3, $4, $5, $6)'
@@ -23,7 +23,7 @@ export class AccountService {
 		})
 	}
 
-	async get_account_data(id: string) {
+	async get_account_data(id: string): Promise<any> {
 
 		let sql = 'select id, email, first_name, last_name, profile_photo, google_account_id, fb_account_id, create_timestamp from users where id = $1'
 		let values = [id]
