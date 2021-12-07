@@ -37,6 +37,7 @@ import { AdsController } from './ads/ads.controller';
 import { AdsService } from './ads/ads.service';
 import { join } from 'path';
 import path = require('path');
+import { ChatService } from './chat/chat.service';
 
 @Module({
   imports: [
@@ -82,7 +83,8 @@ import path = require('path');
     GamesService,
     TeamsService,
     ContentService,
-    AdsService
+    AdsService,
+    ChatService
   ],
 })
 
