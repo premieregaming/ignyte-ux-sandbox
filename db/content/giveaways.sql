@@ -6,7 +6,7 @@ CREATE TABLE public.giveaways (
 	user_id character varying not null,
 	currency_amount character varying not null,
 	is_finished boolean not null default false,
-	start_time timestamp with time zone DEFAULT CURRENT_TIMESTAMP
-	end_time timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+	start_time timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	end_time timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	create_timestamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );

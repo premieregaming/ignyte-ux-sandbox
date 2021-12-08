@@ -6,7 +6,7 @@ export class ContentService {
 
 	constructor(private readonly db: DatabaseService) { }
 
-	getUserPosts(user_id: string): Promise<any> {
+	async getUserPosts(user_id: string): Promise<any> {
 
 		let sql = ''
 		return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ export class ContentService {
 		})
 	}
 
-	getTimeline(user_id: string): Promise<any> {
+	async getTimeline(user_id: string): Promise<any> {
 
 		let sql = ''
 		return new Promise((resolve, reject) => {

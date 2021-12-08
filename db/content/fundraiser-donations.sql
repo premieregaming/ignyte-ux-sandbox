@@ -1,7 +1,7 @@
 
-DROP TABLE IF EXISTS public.fundraisers;
+DROP TABLE IF EXISTS public.fundraiser_donations;
 
-CREATE TABLE public.fundraisers (
+CREATE TABLE public.fundraiser_donations (
 	id uuid DEFAULT public.gen_random_uuid() PRIMARY KEY,
 	user_id character varying not null,
 	amount character varying not null,
