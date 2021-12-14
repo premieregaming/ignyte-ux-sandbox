@@ -35,9 +35,11 @@ import { ContentModule } from './content/content.module';
 import { AdsModule } from './ads/ads.module';
 import { AdsController } from './ads/ads.controller';
 import { AdsService } from './ads/ads.service';
-import { join } from 'path';
-import path = require('path');
 import { ChatService } from './chat/chat.service';
+import { join } from 'path';
+import { NotificationsModule } from './notifications/notifications.module';
+import { SettingsModule } from './settings/settings.module';
+import path = require('path');
 
 @Module({
   imports: [
@@ -57,7 +59,9 @@ import { ChatService } from './chat/chat.service';
     TeamsModule,
     ChatModule,
     ContentModule,
-    AdsModule
+    AdsModule,
+    NotificationsModule,
+    SettingsModule
   ],
   controllers: [
     AppController,

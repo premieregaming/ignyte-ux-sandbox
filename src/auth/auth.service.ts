@@ -8,7 +8,7 @@ export class AuthService {
 
 	constructor(private readonly database: DatabaseService, private readonly account: AccountService) {}
 
-	static google_client_id = '1048890093326-ci0vq06pdahhm6u2odrqsc48hert8kuu.apps.googleusercontent.com'
+	static google_client_id = '1048890093326-t45u8sprcpi769c130kv8uchh0mked39.apps.googleusercontent.com'
 	static client = new OAuth2Client(AuthService.google_client_id);
 
 	async googleTokenVerify(token: string) {
