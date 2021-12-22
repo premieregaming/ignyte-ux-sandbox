@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS public.news;
 
 CREATE TABLE public.news (
 	id uuid DEFAULT public.gen_random_uuid() PRIMARY KEY,
-	user_id character varying,
+	user_id uuid,
 	title character varying not null,
 	game character varying not null,
 	region character varying not null,

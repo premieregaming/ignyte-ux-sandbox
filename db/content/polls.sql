@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS public.polls;
 
 CREATE TABLE public.polls (
 	id uuid DEFAULT public.gen_random_uuid() PRIMARY KEY,
-	user_id character varying not null,
+	user_id uuid not null,
 	content character varying not null,
 	option1 character varying not null,
 	option2 character varying not null,
