@@ -330,6 +330,8 @@ COPY public.post_tags (post_id, user_id) FROM stdin;
 --
 
 COPY public.posts (id, user_id, post_content, create_timestamp) FROM stdin;
+a9d2f136-d024-4c79-9b81-be4d59247dac	e99badcb-2f46-422f-80e6-5d2a17c696dc	asdf	2021-12-21 14:49:03.046981
+1191575a-c216-41d9-8f60-8b312f329dd5	e99badcb-2f46-422f-80e6-5d2a17c696dc	asdf	2021-12-21 14:54:43.130884
 \.
 
 

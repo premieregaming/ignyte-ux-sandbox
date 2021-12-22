@@ -1,6 +1,8 @@
 import { Account } from "./account.js"
 import { Auth } from "./auth.js"
 import { Net } from "./sdk/net.js"
+import { ContentCreatorUX } from "./component/content-creator.js"
+import { Timeline } from "./component/timeline.js"
 
 export class Ignyte {
 
@@ -50,6 +52,14 @@ export class Ignyte {
 		}
 
 		// Net.get('/api/ping').then((response) => { alert(response['data']) })
+
+		Ignyte.init_components()
+	}
+
+	static init_components() {
+
+		ContentCreatorUX.init()
+		Timeline.init()
 	}
 
 	static on_click_nav(item: HTMLElement) {
@@ -83,6 +93,8 @@ export class Ignyte {
 		document.querySelector('#username').innerHTML = Account.data.first_name
 		Ignyte.auth_login.classList.add('hidden')
 		Ignyte.progress_container.classList.remove('hidden')
+
+		Timeline.refresh()
 	}
 }
 

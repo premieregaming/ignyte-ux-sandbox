@@ -106,6 +106,48 @@ div.content-creator > div .avatar-selector > img {
 	cursor: pointer;
 }
 
+.content-creator > div > div.button-row > .button.left {
+	margin-right: auto;
+}
+
 .content-creator > div > div.button-row > .button span {
 	margin-right: .5vw;
+}
+
+.timeline {
+
+	display: flex;
+	flex-flow: column nowrap;
+
+}
+
+.content-item {
+	padding: 2%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: stretch;
+	align-items: flex-start;
+	background: var(--grey-dark);
+    border: 8px solid black;
+}
+
+.content-holder {
+	flex: .8;
+	min-height: 6vh;
+}
+
+.detail-holder {
+	flex: .2;
+	border-top: 1px solid grey;
+	font-weight: 100;
+	width: 100%;
+	display: flex;
+    align-items: center;
+}
+
+.content-item .user-avatar-photo {
+
+	border-radius: 50%;
+	height: 3vh;
+	margin-right: 1vw;
 }
