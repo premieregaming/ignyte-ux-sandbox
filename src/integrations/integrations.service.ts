@@ -112,6 +112,8 @@ export class IntegrationsService {
 
 				data.subscribe((x: Array<any>) => {
 
+					console.log("response size: " + x.length)
+
 					this.process_games(x).then(() => resolve(true))
 				
 				}, (error) => { console.log(error) })
@@ -128,6 +130,7 @@ export class IntegrationsService {
 		return new Promise((resolve, reject) => async function() {
 			
 			for (var i in x) {
+				console.log('adding game' + x[i].name)
 				await this.add_game(x[i])
 			}
 
