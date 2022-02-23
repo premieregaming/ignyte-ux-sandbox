@@ -86,7 +86,6 @@
 				<div>
 					<div class="avatar-selector">
 						<img class='user-avatar-photo'>
-
 						<div class="content-type-selector">
 							<span class="selected">social</span>
 							<span>news</span>
@@ -94,9 +93,12 @@
 							<span>content</span>
 						</div>
 					</div>
+					<div class="content-image-preview-container inactive">
+						<img class="content-image-preview">
+					</div>
 					<textarea name="content-text"></textarea>
 					<div class="button-row">
-						<span class="button left" name="add-item">
+						<span class="button" name="add-item">
 							+
 						</span>
 						<span class="button content-send" name="send">
@@ -104,9 +106,7 @@
 						</span>
 					</div>
 				</div>
-				<div>
-
-				</div>
+		
 			</div>
 			<div class="timeline">
 
@@ -136,6 +136,21 @@
 		<main name="teams">
 		
 		</main>
+
+		<dialog class="image-upload">
+			<div>
+				<h2>Upload Image</h2>
+				<div class="upload-image-container">
+					<img name="img-preview" class="img-preview" />
+				</div>
+				<div class="crop-tool"></div>
+				<span>
+					<label for="image_file_upload" class="file_upload_label" >choose file</label>
+					<input id="image_file_upload" type="file" name="image-uploader" accept="image/*">
+					<span class="button image-submit">submit</span>
+				</span>
+			</div>
+		</dialog>
 
 		<script type="module" src="js/ignyte.js"></script>
 		<script src="https://apis.google.com/js/platform.js" async defer></script>

@@ -78,6 +78,8 @@ aside ~ main {
 	border-right: 1px solid var(--grey-dark);
 	margin-right: 2vw;
 	float: left;
+	display: flex;
+	flex-flow: column nowrap;
 }
 
 main + aside {
@@ -115,4 +117,68 @@ article > div {
 
 article > div > h4 {
 	margin-top: 0;
+}
+
+dialog[open] {
+	width: 100vw;
+	height: 100vh;
+	background: #000000a0;
+	border: none;
+	margin: 0;
+	padding: 0;
+	top: 0;
+}
+
+dialog > div {
+    width: 80vw;
+    background: #000000;
+    height: 80vh;
+    margin-left: 10vw;
+    margin-top: 10vh;
+	box-sizing: border-box;
+	border: 1px solid grey;
+	padding: 2%;
+	display: flex;
+	flex-flow: column;
+}
+
+dialog > div > h2 {
+	color: white;
+	font-weight: 100;
+	height: 10%;
+	margin: 0;
+}
+
+dialog .upload-image-container {
+	height: 80%;
+}
+
+dialog .img-preview {
+	flex: 1;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: 100%;
+}
+
+dialog > div > span {
+	height: 10%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.content-image-preview-container {
+	max-height: 50vh;
+	margin-bottom: 1vh;
+}
+
+.content-image-preview-container.inactive {
+	height: 0;
+}
+
+
+.content-image-preview {
+	max-height: 100%;
+	max-width: 100%;
 }

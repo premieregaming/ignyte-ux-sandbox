@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ContentService } from './content.service';
 import { CreatePostDto } from './dto/create-post.dto';
 
@@ -13,15 +13,20 @@ export class ContentController {
 		return this.service.getUserPosts(param.user_id)
 	}
 
-	@Get('timeline/:user_id')
+	@Get('timeline/:user_id/:offset')
 	async getUserTimeline(@Param() param): Promise<any> {
 
-		return this.service.getTimeline(param.user_id)
+		return this.service.getTimeline(param.user_id, param.offset)
 	}
 
 	@Post('posts')
 	async postContent(@Body() data: CreatePostDto): Promise<any> {
 	
 		return this.service.createPost(data)
+	}
+
+	@Put('image')
+	async putImage(@Body() data) {
+
 	}
 }
