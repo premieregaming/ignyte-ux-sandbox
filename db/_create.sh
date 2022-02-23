@@ -5,6 +5,9 @@ psql ignyte_core -f users.sql
 psql ignyte_core -f profile/profile-education.sql
 psql ignyte_core -f profile/followers.sql
 psql ignyte_core -f profile/friends.sql
+psql ignyte_core -f profile/user-xp.sql
+psql ignyte_core -f profile/xp-event.sql
+psql ignyte_core -f profile/friends.sql
 psql ignyte_core -f content/fundraisers.sql
 psql ignyte_core -f content/fundraiser-donations.sql
 psql ignyte_core -f content/giveaways.sql
@@ -18,6 +21,8 @@ psql ignyte_core -f content/post-tags.sql
 psql ignyte_core -f content/posts.sql
 psql ignyte_core -f chat/user-chat-content.sql
 psql ignyte_core -f chat/user-chat-sessions.sql
+psql ignyte_core -f games/game-genres.sql
+
 
 # psql social_demo -f images.sql 
 # psql social_demo -f posts.sql

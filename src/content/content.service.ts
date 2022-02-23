@@ -18,12 +18,12 @@ export class ContentService {
 		})
 	}
 
-	async getTimeline(user_id: string): Promise<any> {
+	async getTimeline(user_id: string, offset: string): Promise<any> {
 
-		let sql = 'select posts.id, user_id, post_content, posts.create_timestamp, users.first_name, users.last_name, users.profile_photo from posts left join users on user_id = users.id limit 10'
+		let sql = 'select posts.id, user_id, post_content, posts.create_timestamp, users.first_name, users.last_name, users.profile_photo from posts left join users on user_id = users.id order by create_timestamp desc limit 10 offset $1'
 		return new Promise((resolve, reject) => {
 
-			this.db.query(sql, []).then((res) => {
+			this.db.query(sql, [offset]).then((res) => {
 				resolve(res)
 			})
 		})

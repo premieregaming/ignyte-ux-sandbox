@@ -94,7 +94,7 @@ div.content-creator > div .avatar-selector > img {
 	height: 2vh;
 }
 
-.content-creator > div > div.button-row > .button {
+/* .content-creator > div > div.button-row > .button {
 	background-color: white;
 	padding: .5vh 1vw;
 	color: black;
@@ -104,7 +104,8 @@ div.content-creator > div .avatar-selector > img {
 	align-items: center;
 	justify-content: space-between;
 	cursor: pointer;
-}
+	margin-left: 2%;
+} */
 
 .content-creator > div > div.button-row > .button.left {
 	margin-right: auto;
@@ -118,7 +119,7 @@ div.content-creator > div .avatar-selector > img {
 
 	display: flex;
 	flex-flow: column nowrap;
-
+	overflow-y: auto;
 }
 
 .content-item {

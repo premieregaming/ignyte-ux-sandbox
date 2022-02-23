@@ -26,3 +26,24 @@ dialog.inactive {
 .hidden {
 	display: none !important;
 }
+
+.button, .file_upload_label {
+	background-color: white;
+	padding: .2vh 1vw;
+	color: black;
+	border-radius: 8px;
+	vertical-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	margin-left: 2%;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file_upload_label {
+
+}

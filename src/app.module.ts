@@ -39,6 +39,8 @@ import { ChatService } from './chat/chat.service';
 import { join } from 'path';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SettingsModule } from './settings/settings.module';
+import { XpController } from './xp/xp.controller';
+import { XpModule } from './xp/xp.module';
 import path = require('path');
 
 @Module({
@@ -61,7 +63,8 @@ import path = require('path');
     ContentModule,
     AdsModule,
     NotificationsModule,
-    SettingsModule
+    SettingsModule,
+    XpModule
   ],
   controllers: [
     AppController,
@@ -75,7 +78,8 @@ import path = require('path');
     TeamsController,
     ChatController,
     ContentController,
-    AdsController
+    AdsController,
+    XpController
   ],
   providers: [
     AppService,
