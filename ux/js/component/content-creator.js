@@ -23,7 +23,6 @@ export class ContentCreatorUX {
             user_id: Auth.authenticated_user_id,
             post_content: ContentCreatorUX.content_box_el.value,
         };
-        debugger;
         Net.post('/api/content/posts', data).then((result) => {
             ContentCreatorUX.content_box_el.value = '';
             Timeline.refresh();

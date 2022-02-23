@@ -23,9 +23,7 @@ export class ContentService {
 		let sql = 'select posts.id, user_id, post_content, posts.create_timestamp, users.first_name, users.last_name, users.profile_photo from posts left join users on user_id = users.id order by create_timestamp desc limit 10 offset $1'
 		return new Promise((resolve, reject) => {
 
-			this.db.query(sql, [offset]).then((res) => {
-				resolve(res)
-			})
+			this.db.query(sql, [offset]).then((res) => { resolve(res) })
 		})
 	}
 
@@ -36,10 +34,7 @@ export class ContentService {
 
 		return new Promise((resolve, reject) => {
 
-			this.db.query(sql, values).then((res) => {
-
-				resolve(res[0])
-			})
+			this.db.query(sql, values).then((res) => { resolve(res[0]) })
 		})
 	}
 }

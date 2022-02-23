@@ -40,8 +40,6 @@ export class ContentCreatorUX {
 			post_content: ContentCreatorUX.content_box_el.value,
 		}
 
-		debugger
-
 		Net.post('/api/content/posts', data).then((result) => {
 
 			ContentCreatorUX.content_box_el.value = ''

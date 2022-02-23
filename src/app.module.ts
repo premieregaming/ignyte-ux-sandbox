@@ -36,11 +36,16 @@ import { AdsModule } from './ads/ads.module';
 import { AdsController } from './ads/ads.controller';
 import { AdsService } from './ads/ads.service';
 import { ChatService } from './chat/chat.service';
-import { join } from 'path';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SettingsModule } from './settings/settings.module';
 import { XpController } from './xp/xp.controller';
 import { XpModule } from './xp/xp.module';
+import { ImagesController } from './images/images.controller';
+import { ImagesModule } from './images/images.module';
+import { IntegrationsModule } from './integrations/integrations.module';
+import { XpService } from './xp/xp.service';
+import { ImagesService } from './images/images.service';
+import { join } from 'path';
 import path = require('path');
 
 @Module({
@@ -64,7 +69,9 @@ import path = require('path');
     AdsModule,
     NotificationsModule,
     SettingsModule,
-    XpModule
+    XpModule,
+    ImagesModule,
+    IntegrationsModule
   ],
   controllers: [
     AppController,
@@ -79,7 +86,8 @@ import path = require('path');
     ChatController,
     ContentController,
     AdsController,
-    XpController
+    XpController,
+    ImagesController
   ],
   providers: [
     AppService,
@@ -92,7 +100,9 @@ import path = require('path');
     TeamsService,
     ContentService,
     AdsService,
-    ChatService
+    ChatService,
+    XpService,
+    ImagesService
   ],
 })
 
