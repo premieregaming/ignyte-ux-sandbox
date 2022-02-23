@@ -125,11 +125,15 @@ export class IntegrationsService {
 
 	async process_games(x): Promise<any> {
 
-		for (var i in x) {
-			await this.add_game(x[i])
-		}
+		return new Promise((resolve, reject) => async function() {
+			
+			for (var i in x) {
+				await this.add_game(x[i])
+			}
 
-		resolve()
+			resolve(this)
+		})
+	
 		// x.forEach(this.add_game.bind(this))
 	}
 
