@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { map } from 'rxjs';
 import { igdb } from 'igdb-api-node'
-import { resolve } from 'path/posix';
 
 @Injectable()
 export class IntegrationsService {
