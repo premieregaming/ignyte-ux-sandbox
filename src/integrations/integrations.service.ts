@@ -98,7 +98,7 @@ export class IntegrationsService {
 
 	async retrieve_game_data_chunk(offset) {
 
-		return new Promise((resolve, reject) => {
+		return new Promise(((resolve, reject) => {
 
 			try {
 				let url = this.igdb_url + '/games'
@@ -110,34 +110,34 @@ export class IntegrationsService {
 				let response = this.http.request(<any>config)
 				let data = response.pipe(map((res) => res.data))
 
-				data.subscribe((x: Array<any>) => {
+				data.subscribe(((x: Array<any>) => {
 
 					console.log("response size: " + x.length)
-
 					this.process_games(x).then(() => resolve(true))
 				
-				}, (error) => { console.log(error) })
+				}).bind(this), (error) => { console.log(error) })
 			}
 			catch (e) {
 				console.log(e)
 				reject(false)
 			}
-		})
+		}).bind(this))
 	}
 
 	async process_games(x): Promise<any> {
 
-		
+		console.log('processing games')
 
-		return new Promise((resolve, reject) => async function() {
+		return new Promise((async function (resolve, reject) {
 			
-			for (var i in x) {
+			for (var i = 0, ii = x.length; i != ii; ++i) {
+
 				console.log('adding game' + x[i].name)
 				await this.add_game(x[i])
 			}
 
-			resolve(this)
-		})
+			resolve(true)
+		}).bind(this))
 	
 		// x.forEach(this.add_game.bind(this))
 	}

@@ -22,6 +22,7 @@ psql ignyte_core -f content/posts.sql
 psql ignyte_core -f chat/user-chat-content.sql
 psql ignyte_core -f chat/user-chat-sessions.sql
 psql ignyte_core -f games/game-genres.sql
+psql ignyte_core -f games/games.sql
 
 
 # psql social_demo -f images.sql 
