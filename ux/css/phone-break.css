@@ -1,0 +1,34 @@
+@media screen and (max-width: 480px) {
+
+	header {
+		height: calc(var(--nav-height) * .8);
+
+	}
+
+	header > div:nth-child(1) {
+		height: calc(var(--nav-height) * .8);
+		width: calc(var(--aside-width) * .8)
+	}
+
+	header > div:nth-child(2) > nav > span { 
+		font-size: .6em;
+		padding: 2px 4px;
+		border-radius: 20%;
+	}
+
+	aside {
+		width: 100%;
+		height: var(--nav-height);
+	}
+
+	aside ~ main {
+		width: auto;
+		margin-right: 0;
+		border-right: 0;
+		
+	}
+
+	aside > .ads {
+		display: none;
+	}
+}

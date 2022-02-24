@@ -127,6 +127,8 @@ export class IntegrationsService {
 
 	async process_games(x): Promise<any> {
 
+		
+
 		return new Promise((resolve, reject) => async function() {
 			
 			for (var i in x) {
