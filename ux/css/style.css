@@ -1,6 +1,7 @@
 @import "vars.css";
 @import "layout.css";
-@import "home.css";
 @import "aside.css";
 @import "components.css";
-@import "phone-break.css";
+@import "form-factors/phone-break.css";
+@import "sections/home.css";
+@import "sections/games.css";

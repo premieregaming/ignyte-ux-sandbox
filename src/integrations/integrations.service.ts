@@ -2,11 +2,11 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
 import { map } from 'rxjs';
-import { igdb } from 'igdb-api-node'
 
 @Injectable()
 export class IntegrationsService {
 
+	private igdb_url = process.env.igdb_url
 	private twitch_token = { access_token: null, expires_in: null, token_type: null }
 	private get twitch_is_auth() { return this.twitch_token.access_token != null }
 
@@ -24,9 +24,6 @@ export class IntegrationsService {
 			'Authorization': 'Bearer ' + this.twitch_token.access_token
 		} 
 	}
-	
-	private igdb_url = process.env.igdb_url
-	// private igdb_client = igdb()
 
 	constructor(private readonly db: DatabaseService, private readonly http: HttpService) {}
 
@@ -61,18 +58,17 @@ export class IntegrationsService {
 	
 		try {
 			let url = this.igdb_url + '/genres'
-			let body = "fields checksum,created_at,name,slug,updated_at,url;"
+			let body = "fields checksum,created_at,name,slug,updated_at,url; limit 200;"
 			let config = { method: 'POST', url: url, headers: this.twitch_headers, data: body }
 			let response = this.http.request(<any>config)
 			let data = response.pipe(map((res) => res.data))
 
-			data.subscribe((x: Array<any>) => { 
+			data.subscribe((x: Array<any>) => {
 				x.forEach(this.add_genre.bind(this))
+				
 			}, (error) => { console.log(error) })
 		}
-		catch(e) {
-			console.log(e)
-		}
+		catch(e) { console.log(e) }
 	}
 
 	async add_genre(x) {
@@ -86,13 +82,16 @@ export class IntegrationsService {
 
 		if (!this.twitch_is_auth) { await this.twitch_auth() }
 
-		let complete = false
 		let offset = 0
+		let complete = false
 
 		while (!complete) {
 
-			await this.retrieve_game_data_chunk(offset)
-			offset += 100
+			try {
+				await this.retrieve_game_data_chunk(offset)
+				offset += 100
+			}
+			catch(e) { complete = true }
 		}
 	}
 
@@ -111,10 +110,8 @@ export class IntegrationsService {
 				let data = response.pipe(map((res) => res.data))
 
 				data.subscribe(((x: Array<any>) => {
-
 					console.log("response size: " + x.length)
 					this.process_games(x).then(() => resolve(true))
-				
 				}).bind(this), (error) => { console.log(error) })
 			}
 			catch (e) {
@@ -125,9 +122,7 @@ export class IntegrationsService {
 	}
 
 	async process_games(x): Promise<any> {
-
-		console.log('processing games')
-
+	
 		return new Promise((async function (resolve, reject) {
 			
 			for (var i = 0, ii = x.length; i != ii; ++i) {
@@ -138,8 +133,6 @@ export class IntegrationsService {
 
 			resolve(true)
 		}).bind(this))
-	
-		// x.forEach(this.add_game.bind(this))
 	}
 
 	async add_game(x): Promise<any> {
@@ -148,6 +141,40 @@ export class IntegrationsService {
 		sql += 'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55)'
 
 		let values = [ x.id, x.age_ratings, x.aggregated_rating, x.aggregated_rating_count, x.alternative_names, x.artworks, x.bundles, x.category, x.checksum, x.collection, x.cover, x.created_at, x.dlcs, x.expanded_games, x.expansions, x.external_games, x.first_release_date, x.follows, x.forks, x.franchise, x.franchises, x.game_engines, x.game_modes, x.genres, x.hypes, x.involved_companies, x.keywords, x.multiplayer_modes, x.name, x.parent_game, x.platforms, x.player_perspectives, x.ports, x.rating, x.rating_count, x.release_dates, x.remakes, x.remasters, x.screenshots, x.similar_games, x.slug, x.standalone_expansions, x.status, x.storyline, x.summary, x.tags, x.themes, x.total_rating, x.total_rating_count, x.updated_at, x.url, x.version_parent, x.version_title, x.videos, x.websites ]
-		await this.db.query(sql, values)
+		return await this.db.query(sql, values)
+	}
+
+	async retrieve_game_platforms() {
+
+		if (!this.twitch_is_auth) { await this.twitch_auth() }
+
+		return new Promise(((resolve, reject) => {
+
+			try {
+				let url = this.igdb_url + '/platforms'
+				let body = 'fields abbreviation,alternative_name,category,checksum,created_at,generation,name,platform_family,platform_logo,slug,summary,updated_at,url,versions,websites;limit 200;'
+				let config = { method: 'POST', url: url, headers: this.twitch_headers, data: body }
+				let response = this.http.request(<any>config)
+				let data = response.pipe(map((res) => res.data))
+
+				data.subscribe(((x: Array<any>) => {
+					x.forEach((y) => this.add_game_platform(y))
+					resolve(true)
+				}).bind(this), (error) => { console.log(error) })
+			}
+			catch (e) {
+				console.log(e)
+				reject(false)
+			}
+		}).bind(this))
+	}
+
+	async add_game_platform(x): Promise<any> {
+
+		let sql = 'insert into game_platforms (id,abbreviation,alternative_name,category,checksum,created_at,generation,name,platform_family,platform_logo,slug,summary,updated_at,url,versions,websites) '
+		sql += 'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)'
+
+		let values = [x.id, x.abbreviation, x.alternative_name, x.category, x.checksum, x.created_at, x.generation, x.name, x.platform_family, x.platform_logo, x.slug, x.summary, x.updated_at, x.url, x.versions, x.websites]
+		return await this.db.query(sql, values)
 	}
 }

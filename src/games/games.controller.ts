@@ -1,4 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller('games')
-export class GamesController {}
+export class GamesController {
+
+	async retrieve_games() {
+
+	}
+
+}

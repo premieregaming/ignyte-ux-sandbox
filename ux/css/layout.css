@@ -97,7 +97,7 @@ main:not(.active) { display: none; }
 
 main > h2, main > h3 {
 	font-weight: 200;
-	margin: 2vh 0 1vh 2vw;
+	margin: 1vh 0 1vh 1vh;
 }
 
 article {

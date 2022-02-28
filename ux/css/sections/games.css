@@ -1,0 +1,22 @@
+main[name='games'] > .search {
+	margin-left: 1vh;
+}
+
+.filter_games {
+
+	height: 4vh;
+	margin-left: 1vh;
+	margin-top: 1vh;
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	border-bottom: 1px solid var(--grey-light);
+}
+
+.filter_games > span {
+
+	border: 1px solid var(--grey-light);
+	padding: 2px 4px;
+	float: left;
+	margin-right: 1vh;
+}

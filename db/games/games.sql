@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS public.games;
 
 CREATE TABLE public.games (
-	id character varying not null,
+	id character varying primary key not null,
 	age_ratings character varying,
 	aggregated_rating character varying,
 	aggregated_rating_count character varying,

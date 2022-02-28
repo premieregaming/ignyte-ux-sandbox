@@ -23,4 +23,10 @@ export class IntegrationsController {
 
 		return this.service.retrieve_games()
 	}
+
+	@Get('retrieve-platforms')
+	async retrievePlatforms() {
+		
+		return this.service.retrieve_game_platforms()
+	}
 }
