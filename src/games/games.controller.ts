@@ -23,4 +23,6 @@ export class GamesController {
 
 		return this.service.retrieve_all_games(offset)
 	}
+
+	// @Get('platform')
 }
