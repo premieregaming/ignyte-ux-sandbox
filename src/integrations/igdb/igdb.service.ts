@@ -39,7 +39,8 @@ export class IgdbService {
 
 	async retrieve_games(): Promise<any> {
 
-		let offset = 0
+		let sql = 'select count(*) from games'
+		let offset = parseInt(await this.db.query(sql, []).then((res) => res[0]['count']))
 		let complete = false
 
 		while (!complete) {
@@ -95,7 +96,7 @@ export class IgdbService {
 	async add_game(x): Promise<any> {
 
 		let sql = 'insert into games (id, age_ratings,aggregated_rating,aggregated_rating_count,alternative_names,artworks,bundles,category,checksum,collection,cover,created_at,dlcs,expanded_games,expansions,external_games,first_release_date,follows,forks,franchise,franchises,game_engines,game_modes,genres,hypes,involved_companies,keywords,multiplayer_modes,name,parent_game,platforms,player_perspectives,ports,rating,rating_count,release_dates,remakes,remasters,screenshots,similar_games,slug,standalone_expansions,status,storyline,summary,tags,themes,total_rating,total_rating_count,updated_at,url,version_parent,version_title,videos,websites) '
-		sql += 'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55)'
+		sql += 'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55) on conflict on constraint games_pkey do nothing'
 
 		let values = [x.id, x.age_ratings, x.aggregated_rating, x.aggregated_rating_count, x.alternative_names, x.artworks, x.bundles, x.category, x.checksum, x.collection, x.cover, x.created_at, x.dlcs, x.expanded_games, x.expansions, x.external_games, x.first_release_date, x.follows, x.forks, x.franchise, x.franchises, x.game_engines, x.game_modes, x.genres, x.hypes, x.involved_companies, x.keywords, x.multiplayer_modes, x.name, x.parent_game, x.platforms, x.player_perspectives, x.ports, x.rating, x.rating_count, x.release_dates, x.remakes, x.remasters, x.screenshots, x.similar_games, x.slug, x.standalone_expansions, x.status, x.storyline, x.summary, x.tags, x.themes, x.total_rating, x.total_rating_count, (new Date(x.updated_at)).toISOString(), x.url, x.version_parent, x.version_title, x.videos, x.websites]
 		return await this.db.query(sql, values)
@@ -136,9 +137,7 @@ export class IgdbService {
 	async retrieve_game_covers() {
 
 		let sql = 'select count(*) from game_covers'
-		let count = parseInt(await this.db.query(sql, []).then((res) => res[0]['count']))
-
-		let offset = count;
+		let offset = parseInt(await this.db.query(sql, []).then((res) => res[0]['count']))
 		let complete = false
 
 		while (!complete) {
@@ -179,7 +178,7 @@ export class IgdbService {
 
 	private async add_game_cover(x): Promise<any> {
 
-		let sql = 'insert into game_covers (id,game_id,alpha_channel,animated,checksum,height,width,url,image_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)'
+		let sql = 'insert into game_covers (id,game_id,alpha_channel,animated,checksum,height,width,url,image_id) values ($1, $2, $3, $4, $5, $6, $7, $8, $9) on conflict on constraint game_covers_pkey do nothing'
 		let values = [ x.id, x.game, x.hasOwnProperty('alpha_channel') && x.alpha_channel, x.hasOwnProperty('animated') && x.animated, x.checksum, x.height, x.width, x.url, x.image_id ]
 		return await this.db.query(sql, values)
 	}
