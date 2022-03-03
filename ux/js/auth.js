@@ -15,6 +15,7 @@ class GoogleAuthData {
 }
 export class Auth {
     static get is_authenticated() { return false; }
+    static on_auth() { Auth.on_auth_listeners.forEach((x) => x()); }
     static on_sign_in_google(user) {
         var profile = user.getBasicProfile();
         let token = user.getAuthResponse().id_token;
@@ -36,8 +37,10 @@ export class Auth {
             if (response) {
                 Auth.authenticated_user_id = response;
                 Account.get_account();
+                Auth.on_auth();
             }
         });
     }
 }
 Auth.authenticated_user_id = null;
+Auth.on_auth_listeners = [];

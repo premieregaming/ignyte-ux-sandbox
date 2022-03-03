@@ -1,5 +1,6 @@
 import { Account } from "./account.js";
 import { Auth } from "./auth.js";
+import { GamesUX } from './component/games.js';
 import { ContentCreatorUX } from "./component/content-creator.js";
 import { Timeline } from "./component/timeline.js";
 export class Ignyte {
@@ -28,6 +29,7 @@ export class Ignyte {
     static init_components() {
         ContentCreatorUX.init();
         Timeline.init();
+        GamesUX.init();
     }
     static on_click_nav(item) {
         Ignyte.nav_items.forEach((item) => item.classList.remove('selected'));

@@ -46,6 +46,7 @@ import { IntegrationsModule } from './integrations/integrations.module';
 import { XpService } from './xp/xp.service';
 import { ImagesService } from './images/images.service';
 import { join } from 'path';
+import { SanitycheckModule } from './testing/sanitycheck/sanitycheck.module';
 import path = require('path');
 
 @Module({
@@ -71,7 +72,8 @@ import path = require('path');
     SettingsModule,
     XpModule,
     ImagesModule,
-    IntegrationsModule
+    IntegrationsModule,
+    SanitycheckModule
   ],
   controllers: [
     AppController,

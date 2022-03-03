@@ -20,6 +20,9 @@ psql -d $DB_URL -U ignyte_db_admin < content/post-tags.sql
 psql -d $DB_URL -U ignyte_db_admin < content/posts.sql
 psql -d $DB_URL -U ignyte_db_admin < chat/user-chat-content.sql
 psql -d $DB_URL -U ignyte_db_admin < chat/user-chat-sessions.sql
+psql -d $DB_URL -U ignyte_db_admin < games/platforms.sql
 psql -d $DB_URL -U ignyte_db_admin < games/game-platforms.sql
 psql -d $DB_URL -U ignyte_db_admin < games/game-genres.sql
+psql -d $DB_URL -U ignyte_db_admin < games/game-covers.sql
+psql -d $DB_URL -U ignyte_db_admin < games/user-games.sql
 psql -d $DB_URL -U ignyte_db_admin < games/games.sql

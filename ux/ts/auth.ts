@@ -36,6 +36,10 @@ export class Auth {
 	static authenticated_user_id = null;
 	static creds: {}
 
+	static on_auth_listeners: Array<Function> = []
+
+	static on_auth() { Auth.on_auth_listeners.forEach((x) => x() )}
+
 	static on_sign_in_google(user) {
 
 		var profile = user.getBasicProfile()
@@ -63,6 +67,7 @@ export class Auth {
 			if (response) { 
 				Auth.authenticated_user_id = response
 				Account.get_account();
+				Auth.on_auth()
 			}
 		})
 	}

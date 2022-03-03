@@ -1,32 +1,46 @@
 import { Controller, Get } from '@nestjs/common';
+import { IgdbService } from './igdb/igdb.service';
 import { IntegrationsService } from './integrations.service';
+import { TwitchService } from './twitch/twitch.service';
 
 @Controller('integrations')
 export class IntegrationsController {
 
-	constructor(private readonly service: IntegrationsService) { }
+	constructor(private readonly igdb: IgdbService, private readonly twitch: TwitchService) {}
 
 	@Get('test')
 	async test() {
 
-		this.service.twitch_auth()
+		this.twitch.auth()
 	}
 	
 	@Get('retrieve-genres')
 	async retrieveGameGenres() {
 
-		return this.service.retrieve_game_genres()
+		return this.igdb.retrieve_game_genres()
 	}
 
 	@Get('retrieve-games')
 	async retrieveGames() {
 
-		return this.service.retrieve_games()
+		return this.igdb.retrieve_games()
 	}
 
 	@Get('retrieve-platforms')
 	async retrievePlatforms() {
 		
-		return this.service.retrieve_game_platforms()
+		return this.igdb.retrieve_game_platforms()
+	}
+
+	@Get('retrieve-covers')
+	async retrieveCovers() {
+		
+		return this.igdb.retrieve_game_covers()
+	}
+
+	@Get('process-platforms')
+	async processPlatforms() {
+
+		return this.igdb.process_platforms()
 	}
 }

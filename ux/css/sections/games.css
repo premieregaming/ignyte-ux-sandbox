@@ -19,4 +19,16 @@ main[name='games'] > .search {
 	padding: 2px 4px;
 	float: left;
 	margin-right: 1vh;
+	cursor: pointer;
+}
+
+.filter_games > span:hover {
+
+	background: var(--grey-dark);
+}
+
+.filter_games > span.selected {
+
+	background: var(--grey-light);
+	color: black;
 }

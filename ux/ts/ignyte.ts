@@ -1,6 +1,7 @@
 import { Account } from "./account.js"
 import { Auth } from "./auth.js"
 import { Net } from "./sdk/net.js"
+import { GamesUX } from './component/games.js'
 import { ContentCreatorUX } from "./component/content-creator.js"
 import { Timeline } from "./component/timeline.js"
 
@@ -60,6 +61,7 @@ export class Ignyte {
 
 		ContentCreatorUX.init()
 		Timeline.init()
+		GamesUX.init()
 	}
 
 	static on_click_nav(item: HTMLElement) {
