@@ -23,11 +23,13 @@ export class GamesUX {
         GamesUX.my_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.my_games_el, GAME_CATEGORY.MY_GAMES);
         GamesUX.all_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.all_games_el, GAME_CATEGORY.ALL_GAMES);
         GamesUX.pop_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.pop_games_el, GAME_CATEGORY.POP_GAMES);
-        GamesUX.search_bar = document.querySelector("main[name='games'] > .search");
+        GamesUX.search_bar = document.querySelector("main[name='games'] > .search > input");
         GamesUX.filter_items = document.querySelectorAll('.filter-games > span');
         GamesUX.filter_items.forEach((x) => x['onclick'] = (e) => GamesUX.on_click_filter(e.target));
+        GamesUX.search_bar.onkeyup = () => { GamesUX.on_change_search(); };
         Auth.on_auth_listeners.push(() => GamesUX.refresh_games());
     }
+    static on_change_search() { GamesUX.refresh_games(); }
     static on_click_filter(el) {
         el.classList[el.classList.contains('selected') ? 'remove' : 'add']('selected');
         GamesUX.refresh_games();
@@ -42,6 +44,7 @@ export class GamesUX {
         });
         return platforms;
     }
+    static get search_val() { return GamesUX.search_bar.value.length > 2 ? GamesUX.search_bar.value : ''; }
     static refresh_games() {
         GamesUX.retrieve_all_games(0, 24, true);
         GamesUX.retrieve_pop_games(0, 24, true);
@@ -54,12 +57,12 @@ export class GamesUX {
     }
     static retrieve_all_games(offset, limit, clear = false) {
         let url = '/api/games/all';
-        let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit };
+        let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit, search: GamesUX.search_val };
         Net.post(url, body).then((res) => GamesUX.process_all_games(JSON.parse(res), clear));
     }
     static retrieve_pop_games(offset, limit, clear = false) {
         let url = '/api/games/popular';
-        let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit };
+        let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit, search: GamesUX.search_val };
         Net.post(url, body).then((res) => GamesUX.process_pop_games(JSON.parse(res), clear));
     }
     static process_my_games(res) {

@@ -36,15 +36,30 @@ export class GamesService {
 			try {
 
 				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id'
+				let search = x.search.trim()
 				let values = []
 
 				if (x.platforms.length) { 
-					sql += " where game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) limit $2 offset $3;"
-					values = [ x.platforms.join(','), x.limit, x.offset ]
+					
+					if (search.length) {
+						sql += " where (games.name ilike $1 or games.name ilike $2) "
+						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($3, ','))::int) limit $4 offset $5;"
+						values = [ '%' + search + '%', search + '%', x.platforms.join(','), x.limit, x.offset ]
+					}
+					else {
+						sql += " where game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) limit $2 offset $3;"
+						values = [ x.platforms.join(','), x.limit, x.offset ]
+					}
 				}
 				else {
-					sql += ` limit $1 offset $2; `
-					values = [ x.limit, x.offset ]
+					if (search.length) {
+						sql += ` where (games.name ilike $1 or games.name ilike $2) limit $3 offset $4; `
+						values = [ '%' + search + '%', search + '%', x.limit, x.offset ]
+					}
+					else {
+						sql += ` limit $1 offset $2; `
+						values = [ x.limit, x.offset ]
+					}
 				}
 
 				this.db.query(sql, values).then((res) => { resolve(res) })
@@ -60,18 +75,33 @@ export class GamesService {
 			try {
 
 				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url, games.follows from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id where follows is not null '
+				let search = x.search.trim()
 				let values = []
 
 				if (x.platforms.length) { 
 
-					sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) order by follows desc limit $2 offset $3;"
-					values = [ x.platforms.join(','), x.limit, x.offset]
+					if (search.length) {
+						sql += " and (games.name ilike $1 or games.name ilike $2) "
+						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($3, ','))::int) order by follows desc limit $4 offset $5;"
+						values = [ '%' + search + '%', search + '%', x.platforms.join(','), x.limit, x.offset ]
+					}
+					else {
+						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) order by follows desc limit $2 offset $3;"
+						values = [ x.platforms.join(','), x.limit, x.offset ]
+					}
 				}
 				else {
-					sql += ' order by follows desc limit $1 offset $2; '
-					values = [x.limit, x.offset]
+
+					if (search.length) {
+						sql += " and (games.name ilike $1 or games.name ilike $2) "
+						sql += ' order by follows desc limit $3 offset $4; '
+						values = [ '%' + search + '%', search + '%', x.limit, x.offset ]
+					}
+					else {		
+						sql += ' order by follows desc limit $1 offset $2; '
+						values = [ x.limit, x.offset ]
+					}
 				}
-				
 
 				this.db.query(sql, values).then((res) => { resolve(res) })
 			}

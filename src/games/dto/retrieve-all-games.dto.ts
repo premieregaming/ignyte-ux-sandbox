@@ -1,4 +1,4 @@
-import { IsArray, IsInt } from 'class-validator';
+import { IsArray, IsInt, IsString } from 'class-validator';
 
 export class RetrieveAllGamesDto {
 
@@ -10,4 +10,7 @@ export class RetrieveAllGamesDto {
 
 	@IsInt()
 	readonly offset
+
+	@IsString()
+	readonly search
 }

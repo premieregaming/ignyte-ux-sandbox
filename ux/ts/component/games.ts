@@ -19,7 +19,7 @@ export enum GAME_CATEGORY {
 
 export class GamesUX {
 
-	static search_bar: HTMLElement
+	static search_bar: HTMLInputElement
 	static filter_items: NodeListOf<HTMLElement>
 	static my_game_count: HTMLElement
 	static my_games_el: HTMLElement
@@ -37,12 +37,16 @@ export class GamesUX {
 		GamesUX.all_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.all_games_el, GAME_CATEGORY.ALL_GAMES)
 		GamesUX.pop_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.pop_games_el, GAME_CATEGORY.POP_GAMES)
 
-		GamesUX.search_bar = document.querySelector("main[name='games'] > .search")
+		GamesUX.search_bar = document.querySelector("main[name='games'] > .search > input")
 		GamesUX.filter_items = document.querySelectorAll('.filter-games > span')
 		GamesUX.filter_items.forEach((x) => x['onclick'] = (e: Event) => GamesUX.on_click_filter(<Element>e.target) )
 
+		GamesUX.search_bar.onkeyup = () => { GamesUX.on_change_search() }
+
 		Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
 	}
+
+	static on_change_search() { GamesUX.refresh_games() }
 
 	static on_click_filter(el: Element) {
 
@@ -63,6 +67,8 @@ export class GamesUX {
 		return platforms
 	}
 
+	static get search_val() { return GamesUX.search_bar.value.length > 2 ? GamesUX.search_bar.value : '' }
+
 	static refresh_games() {
 
 		GamesUX.retrieve_all_games(0, 24, true)
@@ -81,15 +87,14 @@ export class GamesUX {
 	static retrieve_all_games(offset: number, limit: number, clear: boolean = false) {
 
 		let url = '/api/games/all'
-		let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit }
+		let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit, search: GamesUX.search_val }
 		Net.post(url, body).then((res) => GamesUX.process_all_games(JSON.parse(<string>res), clear))
 	}
 
 	static retrieve_pop_games(offset: number, limit: number, clear: boolean = false) {
 
-
 		let url = '/api/games/popular'
-		let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit }
+		let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit, search: GamesUX.search_val }
 		Net.post(url, body).then((res) => GamesUX.process_pop_games(JSON.parse(<string>res), clear))
 	}
 
