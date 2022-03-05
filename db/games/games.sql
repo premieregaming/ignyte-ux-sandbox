@@ -18,7 +18,7 @@ CREATE TABLE public.games (
 	expansions character varying,
 	external_games character varying,
 	first_release_date character varying,
-	follows character varying,
+	follows integer,
 	forks character varying,
 	franchise integer,
 	franchises character varying,

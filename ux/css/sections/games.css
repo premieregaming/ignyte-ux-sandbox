@@ -2,18 +2,23 @@ main[name='games'] > .search {
 	margin-left: 1vh;
 }
 
-.filter_games {
+.games-content {
+	overflow-y: scroll;
+}
 
-	height: 4vh;
+.filter-games {
 	margin-left: 1vh;
-	margin-top: 1vh;
+	margin-top: 2vh;
+	padding-bottom: 1vh;
 	display: flex;
 	flex-flow: row;
 	align-items: center;
 	border-bottom: 1px solid var(--grey-light);
+	box-shadow: 0px 8px 16px black;
+	z-index: 10;
 }
 
-.filter_games > span {
+.filter-games > span {
 
 	border: 1px solid var(--grey-light);
 	padding: 2px 4px;
@@ -22,13 +27,65 @@ main[name='games'] > .search {
 	cursor: pointer;
 }
 
-.filter_games > span:hover {
+.filter-games > span:hover {
 
 	background: var(--grey-dark);
 }
 
-.filter_games > span.selected {
+.filter-games > span.selected {
 
 	background: var(--grey-light);
 	color: black;
+}
+
+.games-list:not(:empty) {
+	display: grid;
+    /* grid-template-rows: repeat(2, 3fr); */
+    /* width: 120vw; */
+	grid-gap: 2vh;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    grid-template-columns: repeat(auto-fill,minmax(16vw, 1fr));
+    grid-template-rows: repeat(3, 16vw);
+    grid-auto-flow: column;
+}
+
+.games-list:not(:empty) ~ div.no-games-msg {
+	display: none;
+}
+
+.games-list:empty ~ div.no-games-msg {
+	display: block;
+    margin-left: 2vh;
+    margin-top: 2vh;
+    font-style: italic;
+    font-weight: 100;
+    /* color: var(--grey-light); */
+    height: 6vh;
+}
+
+.games-list > div {
+	position: relative;
+}
+
+.games-list > div > img {
+	height: 100%;
+}
+
+.games-list > div > label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    font-weight: 100;
+    background-color: #000000b0;
+}
+
+.games-content h2, .games-content h3 {
+	/* border-bottom: 1px solid var(--grey-light); */
+	padding-top: 2vh;
+}
+
+.games-content:last-child {
+	margin-bottom: 4vh;
 }

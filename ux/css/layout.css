@@ -95,9 +95,10 @@ nav > span.selected {
 
 main:not(.active) { display: none; }
 
-main > h2, main > h3 {
-	font-weight: 200;
+main h2, main h3 {
+	font-weight: 100;
 	margin: 1vh 0 1vh 1vh;
+	letter-spacing: .05em;
 }
 
 article {
@@ -176,7 +177,6 @@ dialog > div > span {
 .content-image-preview-container.inactive {
 	height: 0;
 }
-
 
 .content-image-preview {
 	max-height: 100%;

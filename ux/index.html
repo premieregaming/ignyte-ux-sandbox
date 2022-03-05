@@ -135,22 +135,26 @@
 				<input type="text" name="search-field" placeholder="search" />
 			</div>
 
-			<div class="filter_games">
-				<span>PlayStation</span>
-				<span>Nintendo</span>
-				<span>XBox</span>
-				<span>PC</span>
-				<span>Mobile</span>
+			<div class="filter-games">
+				<span name="PlayStation">PlayStation</span>
+				<span name="Nintendo">Nintendo</span>
+				<span name="Xbox" >XBox</span>
+				<span name="PC">PC</span>
+				<span name="Mobile">Mobile</span>
 			</div>
-			
-			<h3 class='my_game_count'>MY GAMES</h3>
-			<div class="my_games"></div>
 
-			<h3>POPULAR GAMES</h3>
-			<div class="popular_games"></div>
-
-			<h3>ALL GAMES</h3>
-			<div class="all_games"></div>
+			<div class="games-content">
+				<h3 class='my-game-count'>MY GAMES</h3>
+				<div class="games-list my-games"></div>
+				<div class="no-games-msg">You don't have any games selected. Choose from the games available below.</div>
+				
+				<h3>POPULAR GAMES</h3>
+				<div class="games-list popular-games"></div>
+				
+				<h3>ALL GAMES</h3>
+				<div class="games-list all-games"></div>
+			</div>
+	
 		</main>
 
 		<main name="tournaments">

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
+import { RetrieveAllGamesDto } from './dto/retrieve-all-games.dto';
 
 @Injectable()
 export class GamesService {
 
 	constructor(private readonly db: DatabaseService) {}
-
 
 	async retrieve_user_games(user_id: string): Promise<any> {
 
@@ -29,13 +29,51 @@ export class GamesService {
 		
 	}
 
-	async retrieve_all_games(offset: string) {
+	async retrieve_all_games(x: RetrieveAllGamesDto) {
 
 		return new Promise<any>((resolve, reject) => {
 
 			try {
-				let sql = 'select id, name, category from games limit 12 offset $1'
-				this.db.query(sql, [offset]).then((res) => { resolve(res[0]['count']) })
+
+				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id'
+				let values = []
+
+				if (x.platforms.length) { 
+					sql += " where game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) limit $2 offset $3;"
+					values = [ x.platforms.join(','), x.limit, x.offset ]
+				}
+				else {
+					sql += ` limit $1 offset $2; `
+					values = [ x.limit, x.offset ]
+				}
+
+				this.db.query(sql, values).then((res) => { resolve(res) })
+			}
+			catch (e) { reject(false) }
+		})
+	}
+
+	async retrieve_popular_games(x: RetrieveAllGamesDto) {
+
+		return new Promise<any>((resolve, reject) => {
+
+			try {
+
+				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url, games.follows from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id where follows is not null '
+				let values = []
+
+				if (x.platforms.length) { 
+
+					sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) order by follows desc limit $2 offset $3;"
+					values = [ x.platforms.join(','), x.limit, x.offset]
+				}
+				else {
+					sql += ' order by follows desc limit $1 offset $2; '
+					values = [x.limit, x.offset]
+				}
+				
+
+				this.db.query(sql, values).then((res) => { resolve(res) })
 			}
 			catch (e) { reject(false) }
 		})
