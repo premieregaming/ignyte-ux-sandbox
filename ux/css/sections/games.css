@@ -45,9 +45,10 @@ main[name='games'] > .search {
 	grid-gap: 2vh;
     overflow-x: scroll;
     overflow-y: hidden;
-    grid-template-columns: repeat(auto-fill,minmax(16vw, 1fr));
-    grid-template-rows: repeat(3, 16vw);
+    grid-template-columns: repeat(auto-fill,minmax(16vh, 1fr));
+    grid-template-rows: repeat(3, 16vh);
     grid-auto-flow: column;
+	padding-bottom: 1vh;
 }
 
 .games-list:not(:empty) ~ div.no-games-msg {
@@ -84,8 +85,9 @@ main[name='games'] > .search {
 .games-content h2, .games-content h3 {
 	/* border-bottom: 1px solid var(--grey-light); */
 	padding-top: 2vh;
+	margin-bottom: 2vh;
 }
 
 .games-content:last-child {
-	margin-bottom: 4vh;
+	margin-bottom: 6vh;
 }

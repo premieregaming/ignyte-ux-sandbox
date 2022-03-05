@@ -43,8 +43,8 @@ export class GamesUX {
         return platforms;
     }
     static refresh_games() {
-        GamesUX.retrieve_all_games(0, 18, true);
-        GamesUX.retrieve_pop_games(0, 18, true);
+        GamesUX.retrieve_all_games(0, 24, true);
+        GamesUX.retrieve_pop_games(0, 24, true);
         Net.get('/api/games/user/count/' + Auth.authenticated_user_id).then((res) => GamesUX.process_my_game_count(res));
         // Net.get('/api/games/user/' + Auth.authenticated_user_id).then((res) => GamesUX.process_my_games(res))
         // Net.get('/api/games/popular').then((res) => GamesUX.process_pop_games(res))
@@ -101,10 +101,10 @@ export class GamesUX {
                     case GAME_CATEGORY.MY_GAMES:
                         break;
                     case GAME_CATEGORY.ALL_GAMES:
-                        GamesUX.retrieve_all_games(el.children.length, 16, false);
+                        GamesUX.retrieve_all_games(el.children.length, 18, false);
                         break;
                     case GAME_CATEGORY.POP_GAMES:
-                        GamesUX.retrieve_pop_games(el.children.length, 16, false);
+                        GamesUX.retrieve_pop_games(el.children.length, 18, false);
                         break;
                 }
             }
