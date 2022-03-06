@@ -19,6 +19,8 @@ export enum GAME_CATEGORY {
 
 export class GamesUX {
 
+	static page_size: number = 32
+
 	static search_bar: HTMLInputElement
 	static filter_items: NodeListOf<HTMLElement>
 	static my_game_count: HTMLElement
@@ -71,68 +73,105 @@ export class GamesUX {
 
 	static refresh_games() {
 
-		GamesUX.retrieve_all_games(0, 24, true)
-		GamesUX.retrieve_pop_games(0, 24, true)
-
-		Net.get('/api/games/user/count/' + Auth.authenticated_user_id).then((res) => GamesUX.process_my_game_count(res))
-		// Net.get('/api/games/user/' + Auth.authenticated_user_id).then((res) => GamesUX.process_my_games(res))
-		// Net.get('/api/games/popular').then((res) => GamesUX.process_pop_games(res))
+		GamesUX.retrieve_my_games(0, GamesUX.page_size, true)
+		GamesUX.retrieve_all_games(0, GamesUX.page_size, true)
+		GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
 	}
 
-	static process_my_game_count(res) {
+	static retrieve_user_game_count() {
 
-		GamesUX.my_game_count.innerHTML = 'MY GAMES (' + res + ')'
+		let body = {
+			platforms: GamesUX.selected_platforms,
+			search: GamesUX.search_val,
+			user_id: Auth.authenticated_user_id
+		}
+
+		let url = '/api/games/user/count/'
+		Net.post(url, body).then((res) => GamesUX.my_game_count.innerHTML = 'MY GAMES (' + res + ')')
 	}
 
-	static retrieve_all_games(offset: number, limit: number, clear: boolean = false) {
+	static retrieve_my_games(offset: number, limit: number, clear: boolean = false): Promise<any> {
+
+		GamesUX.retrieve_user_game_count()
+
+		let url = '/api/games/user'
+		let body = {
+			platforms: GamesUX.selected_platforms,
+			offset: offset,
+			limit: limit,
+			search: GamesUX.search_val,
+			user_id: Auth.authenticated_user_id
+		}
+
+		return Net.post(url, body).then((res) => GamesUX.process_my_games(JSON.parse(<string>res), clear))
+	}
+
+	static retrieve_all_games(offset: number, limit: number, clear: boolean = false): Promise<any> {
 
 		let url = '/api/games/all'
-		let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit, search: GamesUX.search_val }
-		Net.post(url, body).then((res) => GamesUX.process_all_games(JSON.parse(<string>res), clear))
+		let body = { 
+			platforms: GamesUX.selected_platforms, 
+			offset: offset, 
+			limit: limit, 
+			search: GamesUX.search_val,
+			user_id: Auth.authenticated_user_id
+		}
+
+		return Net.post(url, body).then((res) => GamesUX.process_all_games(JSON.parse(<string>res), clear))
 	}
 
-	static retrieve_pop_games(offset: number, limit: number, clear: boolean = false) {
+	static retrieve_pop_games(offset: number, limit: number, clear: boolean = false): Promise<any> {
 
 		let url = '/api/games/popular'
-		let body = { platforms: GamesUX.selected_platforms, offset: offset, limit: limit, search: GamesUX.search_val }
-		Net.post(url, body).then((res) => GamesUX.process_pop_games(JSON.parse(<string>res), clear))
+		let body = { 
+			platforms: GamesUX.selected_platforms, 
+			offset: offset, 
+			limit: limit, 
+			search: GamesUX.search_val,
+			user_id: Auth.authenticated_user_id
+		}
+
+		return Net.post(url, body).then((res) => GamesUX.process_pop_games(JSON.parse(<string>res), clear))
 	}
 
-	static process_my_games(res) {
-		
+	static process_my_games(res, clear: boolean) {
+
+		if (clear) GamesUX.my_games_el.innerHTML = ''
+		res.forEach((game) => GamesUX.my_games_el.appendChild(GamesUX.create_game_tile(game)))
+
+		let el = GamesUX.my_games_el
+		if (el.children.length == 1) el.classList.add('single-row')
+		if (el.children.length == 2) el.classList.add('double-row')
+		else { 
+			if (el.classList.contains('single-row')) el.classList.remove('single-row')
+			if (el.classList.contains('double-row')) el.classList.remove('double-row')
+		}
 	}
 
 	static process_pop_games(res, clear: boolean) {
 
 		if (clear) GamesUX.pop_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.add_game_to_pop(game)) 
+		res.forEach((game) => GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game)))
 	}
 
 	static process_all_games(res, clear: boolean) {
 
 		if (clear) GamesUX.all_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.add_game_to_all(game)) 
-	}
-
-	static add_game_to_all(game) {
-
-		GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game))
-	}
-
-	static add_game_to_pop(game) {
-
-		GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game))
+		res.forEach((game) => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game))) 
 	}
 
 	static create_game_tile(game): Element {
 
-		let container = document.createElement('div')
 		let img = document.createElement('img')
 		let label = document.createElement('label')
+		let container = document.createElement('div')
+
+		img.src = game.cover_url
+		label.innerHTML = game.name
 
 		container.id = 'game-' + game.id
-		label.innerHTML = game.name
-		img.src = game.cover_url
+		container.dataset.id = game.id
+		container.onclick = () => GamesUX.on_click_tile(container)
 
 		container.appendChild(img)
 		container.appendChild(label)
@@ -140,25 +179,45 @@ export class GamesUX {
 		return container;
 	}
 
-	static on_scroll(el: Element, cat: GAME_CATEGORY) {
+	static on_click_tile(el) {
+
+		let body = { 
+			user_id: Auth.authenticated_user_id,
+			game_id: parseInt(el.dataset.id),
+			liked: el.dataset.liked != 'true' 
+		}
+
+		Net.post('/api/games/like-game', body).then((res) => GamesUX.retrieve_my_games(0, GamesUX.page_size, true))
+	}
+
+	static is_refreshing = false;
+
+	static async on_scroll(el: Element, cat: GAME_CATEGORY) {
+
+		if (GamesUX.is_refreshing) return
 
 		try {
 			// let el: HTMLElement = <HTMLElement>event.target
 			let item_width = el.children[0].clientWidth
 			let distance = el.scrollWidth - (el.scrollLeft + el.clientWidth)
-			if (distance < (item_width * 2)) {
+			if (distance < (item_width * (GamesUX.page_size / 4))) {
 
+				GamesUX.is_refreshing = true
 				switch (cat) {
 
 					case GAME_CATEGORY.MY_GAMES:
+						await GamesUX.retrieve_my_games(el.children.length, GamesUX.page_size, false)
+						GamesUX.is_refreshing = false
 						break;
 
 					case GAME_CATEGORY.ALL_GAMES:
-						GamesUX.retrieve_all_games(el.children.length, 18, false)
+						await GamesUX.retrieve_all_games(el.children.length, GamesUX.page_size, false)
+						GamesUX.is_refreshing = false
 						break;
 
 					case GAME_CATEGORY.POP_GAMES:
-						GamesUX.retrieve_pop_games(el.children.length, 18, false)
+						await GamesUX.retrieve_pop_games(el.children.length, GamesUX.page_size, false)
+						GamesUX.is_refreshing = false
 						break;
 				}
 			}

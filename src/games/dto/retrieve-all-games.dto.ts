@@ -13,4 +13,7 @@ export class RetrieveAllGamesDto {
 
 	@IsString()
 	readonly search
+
+	@IsString()
+	readonly user_id
 }

@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { IgdbService } from './igdb/igdb.service';
-import { IntegrationsService } from './integrations.service';
 import { TwitchService } from './twitch/twitch.service';
+import { IntegrationsService } from './integrations.service';
 
 @Controller('integrations')
 export class IntegrationsController {

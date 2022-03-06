@@ -51,6 +51,14 @@ main[name='games'] > .search {
 	padding-bottom: 1vh;
 }
 
+.games-list.single-row {
+	grid-template-rows: repeat(1, 16vh);
+}
+
+.games-list.double-row {
+	grid-template-rows: repeat(2, 16vh);
+}
+
 .games-list:not(:empty) ~ div.no-games-msg {
 	display: none;
 }

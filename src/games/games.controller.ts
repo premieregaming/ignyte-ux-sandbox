@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { LikeGameDto } from './dto/like-game.dto';
 import { RetrieveAllGamesDto } from './dto/retrieve-all-games.dto';
 import { GamesService } from './games.service';
 
@@ -7,16 +8,16 @@ export class GamesController {
 
 	constructor(private readonly service: GamesService) {}
 
-	@Get('user/:user_id')
-	async retrieve_user_games(@Param() param) {
+	@Post('user/count')
+	async retrieve_user_game_count(@Body() data: RetrieveAllGamesDto) {
 
-		return this.service.retrieve_user_games(param.user_id)
+		return this.service.retrieve_user_game_count(data)
 	}
 
-	@Get('user/count/:user_id')
-	async retrieve_user_game_count(@Param() param) {
+	@Post('user')
+	async retrieve_user_games(@Body() data: RetrieveAllGamesDto) {
 
-		return this.service.retrieve_user_game_count(param.user_id)
+		return this.service.retrieve_user_games(data)
 	}
 
 	@Post('all')
@@ -29,6 +30,12 @@ export class GamesController {
 	async retrieve_popular_games(@Body() data: RetrieveAllGamesDto) {
 
 		return this.service.retrieve_popular_games(data)
+	}
+
+	@Post('like-game')
+	async like_unlike_game(@Body() data: LikeGameDto) {
+
+		return this.service.like_unlike_game(data)
 	}
 
 	// @Get('platform')
