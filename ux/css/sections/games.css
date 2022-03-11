@@ -86,9 +86,11 @@ main[name='games'] > .search {
 }
 
 .games-list > div > img.add-game-button {
+	transition: rotate(-180deg);
+	transition-duration: 140ms;
 	position: absolute;
-	top: .2vh;
-	right: .2vh;
+	top: .3vh;
+	right: .3vh;
 	height: 4vh;
 	width: 4vh;
 	opacity: .8;
@@ -96,7 +98,8 @@ main[name='games'] > .search {
 
 .games-list > div.liked > img.add-game-button {
 
-	transform: rotate(45deg);
+	transform: rotate(225deg);
+	transition-duration: 220ms;
 	opacity: 0.6;
 }
 

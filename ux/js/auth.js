@@ -45,4 +45,3 @@ export class Auth {
 }
 Auth.authenticated_user_id = null;
 Auth.on_auth_listeners = [];
-//# sourceMappingURL=auth.js.map

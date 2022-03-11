@@ -37,8 +37,14 @@ export class GamesUX {
         GamesUX.search_bar = document.querySelector("main[name='games'] > .search > input");
         GamesUX.filter_items = document.querySelectorAll('.filter-games > span');
         GamesUX.filter_items.forEach((x) => x['onclick'] = (e) => GamesUX.on_click_filter(e.target));
-        GamesUX.search_bar.onkeyup = () => { GamesUX.on_change_search(); };
+        GamesUX.search_bar.onkeyup = () => { GamesUX.handle_search_change(); };
         Auth.on_auth_listeners.push(() => GamesUX.refresh_games());
+    }
+    static handle_search_change() {
+        if (GamesUX.search_debounce) {
+            window.clearTimeout(GamesUX.search_debounce);
+        }
+        GamesUX.search_debounce = window.setTimeout(() => GamesUX.refresh_games(), 320);
     }
     static on_change_search() {
         if (GamesUX.request_queued)
@@ -65,18 +71,27 @@ export class GamesUX {
         });
         return platforms;
     }
-    static get search_val() { return GamesUX.search_bar.value.length > 2 ? GamesUX.search_bar.value : ''; }
+    static get search_val() { return GamesUX.search_bar.value; }
     static refresh_games() {
-        if (GamesUX.is_refreshing)
+        if (GamesUX.is_refreshing) {
+            GamesUX.retrigger_refresh = true;
             return Promise.resolve(true);
+        }
         GamesUX.is_refreshing = true;
-        return Promise.all([
+        GamesUX.current_refresh = Promise.all([
             GamesUX.retrieve_my_games(0, GamesUX.page_size, true),
             GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
             GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
         ]).then(() => (GamesUX.request_queued)
             ? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
-            : Promise.resolve(true)).then(() => GamesUX.is_refreshing = false);
+            : Promise.resolve(true)).then(() => {
+            GamesUX.is_refreshing = false;
+            GamesUX.current_refresh = Promise.resolve(true);
+            if (GamesUX.retrigger_refresh) {
+                window.setTimeout(GamesUX.refresh_games, 10);
+            }
+        });
+        return GamesUX.current_refresh;
     }
     static retrieve_user_game_count() {
         let body = {
@@ -213,4 +228,5 @@ export class GamesUX {
 GamesUX.page_size = 32;
 GamesUX.request_queued = false;
 GamesUX.is_refreshing = false;
-//# sourceMappingURL=games.js.map
+GamesUX.search_debounce = 0;
+GamesUX.retrigger_refresh = false;

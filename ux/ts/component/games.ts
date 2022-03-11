@@ -22,6 +22,7 @@ export class GamesUX {
 	static page_size: number = 32
 	static request_queued = false
 	static is_refreshing = false
+	static search_debounce = 0
 
 	static search_bar: HTMLInputElement
 	static filter_items: NodeListOf<HTMLElement>
@@ -30,6 +31,9 @@ export class GamesUX {
 	static pop_games_el: HTMLElement
 	static all_games_el: HTMLElement
 	static in_game_user_dialog: HTMLElement
+
+	static current_refresh: Promise<any>
+	static retrigger_refresh: boolean = false
 
 	static get user_id() { return Auth.is_authenticated ? Auth.authenticated_user_id : null }
 
@@ -49,8 +53,16 @@ export class GamesUX {
 		GamesUX.filter_items = document.querySelectorAll('.filter-games > span')
 		GamesUX.filter_items.forEach((x) => x['onclick'] = (e: Event) => GamesUX.on_click_filter(<Element>e.target) )
 
-		GamesUX.search_bar.onkeyup = () => { GamesUX.on_change_search() }
+		GamesUX.search_bar.onkeyup = () => { GamesUX.handle_search_change() }
 		Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
+	}
+
+	static handle_search_change() {
+
+		debugger
+
+		if (GamesUX.search_debounce) { window.clearTimeout(GamesUX.search_debounce) }
+		GamesUX.search_debounce = window.setTimeout(() => GamesUX.refresh_games(), 320)
 	}
 
 	static on_change_search() {
@@ -83,21 +95,31 @@ export class GamesUX {
 		return platforms
 	}
 
-	static get search_val() { return GamesUX.search_bar.value.length > 2 ? GamesUX.search_bar.value : '' }
+	static get search_val() { return GamesUX.search_bar.value }
 
-	static refresh_games(): Promise<any> {
+	static refresh_games(my_games: boolean = false): Promise<any> {
 
-		if (GamesUX.is_refreshing) return Promise.resolve(true)
+		if (GamesUX.is_refreshing) { 
+			GamesUX.retrigger_refresh = true
+			return Promise.resolve(true) 
+		}
+
 		GamesUX.is_refreshing = true
 
-		return Promise.all([
+		GamesUX.current_refresh = Promise.all([
 			GamesUX.retrieve_my_games(0, GamesUX.page_size, true),
 			GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
 			GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
 		]).then(() => (GamesUX.request_queued)
 			? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
 			: Promise.resolve(true)
-		).then(() => GamesUX.is_refreshing = false)
+		).then(() => {
+			GamesUX.is_refreshing = false
+			GamesUX.current_refresh = Promise.resolve(true)
+			if (GamesUX.retrigger_refresh) { window.setTimeout(GamesUX.refresh_games, 10) }
+		})
+
+		return GamesUX.current_refresh
 	}
 
 	static retrieve_user_game_count() {

@@ -23,4 +23,3 @@ export class Net {
         });
     }
 }
-//# sourceMappingURL=net.js.map

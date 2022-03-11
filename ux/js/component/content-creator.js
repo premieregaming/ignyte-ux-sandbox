@@ -47,4 +47,3 @@ export class ContentCreatorUX {
         ContentCreatorUX.image_upload_dialog.removeAttribute('open');
     }
 }
-//# sourceMappingURL=content-creator.js.map

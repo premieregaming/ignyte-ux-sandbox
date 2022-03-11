@@ -9,4 +9,3 @@ export class TimelineItem {
         this.create_timestamp = data.create_timestamp;
     }
 }
-//# sourceMappingURL=timeline-item.js.map

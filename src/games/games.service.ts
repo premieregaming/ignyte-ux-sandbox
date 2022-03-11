@@ -32,7 +32,7 @@ export class GamesService {0
 
 				if (!x.user_id) { return resolve(0) }
 
-				let sql = 'select count(distinct(games.id)) from games left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
+				let sql = 'select count(games.id) from games left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
 				let values = [ x.user_id ]
 				this.db.query(sql, values).then((res) => { resolve(res[0]['count']) })
 			}
@@ -48,8 +48,8 @@ export class GamesService {0
 
 				if (!x.user_id) { return resolve([]) }
 
-				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url'
-				sql += ' from games left join game_platforms on games.id = game_platforms.game_id'
+				let sql = 'select games.id, games.name, game_covers.url as cover_url'
+				sql += ' from games inner join lateral ( select game_id from game_platforms where games.id = game_platforms.game_id limit 1) as ltr on true '
 				sql += ' left join game_covers on games.id = game_covers.game_id'
 				sql += ' left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
 				sql += " limit $2 offset $3; "
@@ -72,16 +72,15 @@ export class GamesService {0
 				let search = x.search.trim()
 				let values = []
 
-				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url '
+				let sql = 'select games.id, games.name, game_covers.url as cover_url '
 				if (x.user_id) { 
 					sql += ', exists ( select game_id from user_games where user_games.game_id = games.id and user_games.user_id = ' + p.next + ' ) as liked'
 					values.push(x.user_id)
 				}
 				
-				sql += ' from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id'
-
-				if (x.platforms.length) { 
-					sql += j.next + "game_platforms.platform_id in (SELECT unnest(string_to_array(" + p.next + ", ','))::int) " 
+				sql += ' from games left join game_covers on games.id = game_covers.game_id ' 
+				if (x.platforms.length) {
+					sql += "inner join lateral ( select game_id from game_platforms where games.id = game_platforms.game_id and game_platforms.platform_id in (SELECT unnest(string_to_array(" + p.next + ", ','))::int) limit 1) as ltr on true " 
 					values.push(x.platforms.join(','))
 				}
 					
@@ -110,17 +109,16 @@ export class GamesService {0
 				let search = x.search.trim()
 				let values = []
 
-				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url, games.follows '
+				let sql = 'select games.id, games.name, game_covers.url as cover_url, games.follows '
 
 				if (x.user_id) {
 					sql += ", exists ( select game_id from user_games where user_games.game_id = games.id and user_games.user_id = " + p.next + " ) as liked"
 					values.push(x.user_id)
 				}
 
-				sql += ' from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id where follows is not null '
-
-				if (x.platforms.length) {
-					sql += j.next + "game_platforms.platform_id in (SELECT unnest(string_to_array(" + p.next +  ", ','))::int) order by follows desc limit " + p.next + " offset " + p.next + ";"
+				sql += " from games left join game_covers on games.id = game_covers.game_id " 
+				if (x.platforms.length) { 
+					sql += "inner join lateral ( select game_id from game_platforms where games.id = game_platforms.game_id and game_platforms.platform_id in (SELECT unnest(string_to_array(" + p.next + ", ','))::int) limit 1) as ltr on true " 
 					values.push(x.platforms.join(','))
 				}
 
@@ -129,7 +127,7 @@ export class GamesService {0
 					values = values.concat(['%' + search + '%', search + '%'])
 				}
 
-				sql += " limit " + p.next + " offset " + p.next + "; "
+				sql += j.next + " follows is not null order by follows desc limit " + p.next + " offset " + p.next + "; "
 				values = values.concat([x.limit, x.offset])
 				
 				this.db.query(sql, values).then((res) => { resolve(res) })

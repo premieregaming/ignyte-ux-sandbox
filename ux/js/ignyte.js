@@ -57,4 +57,3 @@ export class Ignyte {
 }
 Ignyte.init();
 window['Ignyte'] = Ignyte;
-//# sourceMappingURL=ignyte.js.map

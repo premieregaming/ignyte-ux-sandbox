@@ -11,3 +11,6 @@ CREATE TABLE public.game_covers (
 	image_id character varying,
 	url character varying
 );
+
+alter table game_covers add constraint game_covers_id_fk foreign key (game_id) references games (id);
+create index game_covers_game_idx on game_covers (game_id);
