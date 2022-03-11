@@ -41,6 +41,7 @@ export class GamesUX {
         Auth.on_auth_listeners.push(() => GamesUX.refresh_games());
     }
     static handle_search_change() {
+        debugger;
         if (GamesUX.search_debounce) {
             window.clearTimeout(GamesUX.search_debounce);
         }
@@ -72,7 +73,7 @@ export class GamesUX {
         return platforms;
     }
     static get search_val() { return GamesUX.search_bar.value; }
-    static refresh_games() {
+    static refresh_games(my_games = false) {
         if (GamesUX.is_refreshing) {
             GamesUX.retrigger_refresh = true;
             return Promise.resolve(true);
@@ -88,6 +89,7 @@ export class GamesUX {
             GamesUX.is_refreshing = false;
             GamesUX.current_refresh = Promise.resolve(true);
             if (GamesUX.retrigger_refresh) {
+                GamesUX.retrigger_refresh = false;
                 window.setTimeout(GamesUX.refresh_games, 10);
             }
         });

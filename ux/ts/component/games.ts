@@ -116,7 +116,10 @@ export class GamesUX {
 		).then(() => {
 			GamesUX.is_refreshing = false
 			GamesUX.current_refresh = Promise.resolve(true)
-			if (GamesUX.retrigger_refresh) { window.setTimeout(GamesUX.refresh_games, 10) }
+			if (GamesUX.retrigger_refresh) { 
+				GamesUX.retrigger_refresh = false
+				window.setTimeout(GamesUX.refresh_games, 10)
+			}
 		})
 
 		return GamesUX.current_refresh
