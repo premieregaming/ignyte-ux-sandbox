@@ -164,7 +164,7 @@ export class GamesUX {
         container.appendChild(label);
         if (like_button) {
             img_button.classList.add('add-game-button');
-            img_button.src = './images/icons/SVG/256px/promote_image_add_256.svg';
+            img_button.src = './images/icons/svg/256px/promote_image_add_256.svg';
             container.appendChild(img_button);
             img_button.onclick = () => GamesUX.on_click_like(container);
         }
@@ -213,3 +213,4 @@ export class GamesUX {
 GamesUX.page_size = 32;
 GamesUX.request_queued = false;
 GamesUX.is_refreshing = false;
+//# sourceMappingURL=games.js.map

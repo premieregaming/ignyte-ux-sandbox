@@ -8,6 +8,7 @@ mkdir dist/ux
 cp -r ux/css dist/ux/css
 cp -r ux/images dist/ux/images
 cp -r ux/js dist/ux/js
+cp -r ux/ts dist/ux/ts
 cp ux/*.html dist/ux/
 
 # rm -rf dist/ux-admin

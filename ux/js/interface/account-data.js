@@ -10,3 +10,4 @@ export class AccountData {
         this.create_timestamp = data.create_timestamp;
     }
 }
+//# sourceMappingURL=account-data.js.map

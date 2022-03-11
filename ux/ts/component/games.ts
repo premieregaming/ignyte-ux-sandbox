@@ -204,7 +204,7 @@ export class GamesUX {
 
 		if (like_button) { 
 			img_button.classList.add('add-game-button')
-			img_button.src = './images/icons/SVG/256px/promote_image_add_256.svg'
+			img_button.src = './images/icons/svg/256px/promote_image_add_256.svg'
 			
 			container.appendChild(img_button)
 			img_button.onclick = () => GamesUX.on_click_like(container)
@@ -218,7 +218,7 @@ export class GamesUX {
 		el.dataset.liked = (el.dataset.liked == 'true') ? 'false' : true;
 		el.classList[(el.dataset.liked == 'true') ? 'add' : 'remove']('liked')
 
-		let body = { 
+		let body = {
 			user_id: GamesUX.user_id,
 			game_id: parseInt(el.dataset.id),
 			liked: el.dataset.liked == 'true'

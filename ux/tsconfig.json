@@ -3,6 +3,7 @@
 		"outDir": "js",
 		"target": "es6",
 		"module": "es6",
+		"sourceMap": true,
 		"typeRoots": [
 			"./node_modules/@types"
 		]

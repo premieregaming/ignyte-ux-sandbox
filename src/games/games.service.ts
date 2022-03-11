@@ -18,8 +18,9 @@ class JoinGen {
 		return (is_where ? ' where ' : ' and ')
 	}
 }
+
 @Injectable()
-export class GamesService {
+export class GamesService {0
 
 	constructor(private readonly db: DatabaseService) {}
 
