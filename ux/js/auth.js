@@ -14,7 +14,7 @@ class GoogleAuthData {
     }
 }
 export class Auth {
-    static get is_authenticated() { return false; }
+    static get is_authenticated() { return Auth.authenticated_user_id != null; }
     static on_auth() { Auth.on_auth_listeners.forEach((x) => x()); }
     static on_sign_in_google(user) {
         var profile = user.getBasicProfile();
@@ -41,6 +41,7 @@ export class Auth {
             }
         });
     }
+    static init_unauthenticated() { Auth.on_auth(); }
 }
 Auth.authenticated_user_id = null;
 Auth.on_auth_listeners = [];

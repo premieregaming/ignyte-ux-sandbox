@@ -57,3 +57,5 @@ CREATE TABLE public.games (
 	videos character varying,
 	websites character varying
 );
+
+CREATE INDEX games_id_idx ON games (id);

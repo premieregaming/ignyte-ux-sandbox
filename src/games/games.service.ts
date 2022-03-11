@@ -3,6 +3,21 @@ import { DatabaseService } from '../database/database.service';
 import { LikeGameDto } from './dto/like-game.dto';
 import { RetrieveAllGamesDto } from './dto/retrieve-all-games.dto';
 
+
+class ParamGen {
+
+	private i: number = 1
+	get next() { this.i++; return '$' + (this.i - 1).toString() }
+}
+class JoinGen {
+
+	private tripped = true
+	get next() {
+		let is_where = this.tripped
+		this.tripped = false
+		return (is_where ? ' where ' : ' and ')
+	}
+}
 @Injectable()
 export class GamesService {
 
@@ -14,35 +29,10 @@ export class GamesService {
 
 			try {
 
-				let sql = 'select count(distinct(games.id)) from games left join game_platforms on games.id = game_platforms.game_id'
-				sql += ' left join game_covers on games.id = game_covers.game_id left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
-				let search = x.search.trim()
-				let values = []
+				if (!x.user_id) { return resolve(0) }
 
-				if (x.platforms.length) {
-
-					if (search.length) {
-						sql += " and (games.name ilike $2 or games.name ilike $3) "
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($4, ','))::int);"
-						values = [ x.user_id, '%' + search + '%', search + '%', x.platforms.join(',') ]
-					}
-					else {
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($2, ','))::int);"
-						values = [ x.user_id, x.platforms.join(',') ]
-					}
-				}
-				else {
-					if (search.length) {
-						sql += ` and (games.name ilike $2 or games.name ilike $3); `
-						values = [ x.user_id, '%' + search + '%', search + '%' ]
-					}
-					else {
-						values = [ x.user_id ]
-					}
-				}
-
-
-				// let sql = 'select count(*) from user_games where user_id = $1'
+				let sql = 'select count(distinct(games.id)) from games left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
+				let values = [ x.user_id ]
 				this.db.query(sql, values).then((res) => { resolve(res[0]['count']) })
 			}
 			catch (e) { reject(false) }
@@ -55,34 +45,15 @@ export class GamesService {
 
 			try {
 
-				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url from games left join game_platforms on games.id = game_platforms.game_id'
-				sql += ' left join game_covers on games.id = game_covers.game_id left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
-				let search = x.search.trim()
-				let values = []
+				if (!x.user_id) { return resolve([]) }
 
-				if (x.platforms.length) {
+				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url'
+				sql += ' from games left join game_platforms on games.id = game_platforms.game_id'
+				sql += ' left join game_covers on games.id = game_covers.game_id'
+				sql += ' left join user_games on games.id = user_games.game_id where user_games.user_id = $1'
+				sql += " limit $2 offset $3; "
 
-					if (search.length) {
-						sql += " and (games.name ilike $2 or games.name ilike $3) "
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($4, ','))::int) limit $5 offset $6;"
-						values = [ x.user_id, '%' + search + '%', search + '%', x.platforms.join(','), x.limit, x.offset ]
-					}
-					else {
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($2, ','))::int) limit $3 offset $4;"
-						values = [ x.user_id, x.platforms.join(','), x.limit, x.offset ]
-					}
-				}
-				else {
-					if (search.length) {
-						sql += ` and (games.name ilike $2 or games.name ilike $3) limit $4 offset $5; `
-						values = [ x.user_id, '%' + search + '%', search + '%', x.limit, x.offset ]
-					}
-					else {
-						sql += ` limit $2 offset $3; `
-						values = [ x.user_id, x.limit, x.offset ]
-					}
-				}
-
+				let values = [ x.user_id, x.limit, x.offset ]
 				this.db.query(sql, values).then((res) => { resolve(res) })
 			}
 			catch (e) { reject(false) }
@@ -95,32 +66,31 @@ export class GamesService {
 
 			try {
 
-				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id'
+				let p = new ParamGen()
+				let j = new JoinGen()
 				let search = x.search.trim()
 				let values = []
 
+				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url '
+				if (x.user_id) { 
+					sql += ', exists ( select game_id from user_games where user_games.game_id = games.id and user_games.user_id = ' + p.next + ' ) as liked'
+					values.push(x.user_id)
+				}
+				
+				sql += ' from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id'
+
 				if (x.platforms.length) { 
+					sql += j.next + "game_platforms.platform_id in (SELECT unnest(string_to_array(" + p.next + ", ','))::int) " 
+					values.push(x.platforms.join(','))
+				}
 					
-					if (search.length) {
-						sql += " where (games.name ilike $1 or games.name ilike $2) "
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($3, ','))::int) limit $4 offset $5;"
-						values = [ '%' + search + '%', search + '%', x.platforms.join(','), x.limit, x.offset ]
-					}
-					else {
-						sql += " where game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) limit $2 offset $3;"
-						values = [ x.platforms.join(','), x.limit, x.offset ]
-					}
+				if (search.length) {
+					sql += j.next + "(games.name ilike " + p.next + " or games.name ilike " + p.next + ") "
+					values = values.concat([ '%' + search + '%', search + '%' ])
 				}
-				else {
-					if (search.length) {
-						sql += ` where (games.name ilike $1 or games.name ilike $2) limit $3 offset $4; `
-						values = [ '%' + search + '%', search + '%', x.limit, x.offset ]
-					}
-					else {
-						sql += ` limit $1 offset $2; `
-						values = [ x.limit, x.offset ]
-					}
-				}
+	
+				sql += " limit " + p.next + " offset " + p.next + "; "
+				values = values.concat([x.limit, x.offset])
 
 				this.db.query(sql, values).then((res) => { resolve(res) })
 			}
@@ -134,35 +104,33 @@ export class GamesService {
 
 			try {
 
-				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url, games.follows from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id where follows is not null '
+				let p = new ParamGen()
+				let j = new JoinGen()
 				let search = x.search.trim()
 				let values = []
 
-				if (x.platforms.length) { 
+				let sql = 'select distinct(games.id), games.name, game_covers.url as cover_url, games.follows '
 
-					if (search.length) {
-						sql += " and (games.name ilike $1 or games.name ilike $2) "
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($3, ','))::int) order by follows desc limit $4 offset $5;"
-						values = [ '%' + search + '%', search + '%', x.platforms.join(','), x.limit, x.offset ]
-					}
-					else {
-						sql += " and game_platforms.platform_id in (SELECT unnest(string_to_array($1, ','))::int) order by follows desc limit $2 offset $3;"
-						values = [ x.platforms.join(','), x.limit, x.offset ]
-					}
-				}
-				else {
-
-					if (search.length) {
-						sql += " and (games.name ilike $1 or games.name ilike $2) "
-						sql += ' order by follows desc limit $3 offset $4; '
-						values = [ '%' + search + '%', search + '%', x.limit, x.offset ]
-					}
-					else {		
-						sql += ' order by follows desc limit $1 offset $2; '
-						values = [ x.limit, x.offset ]
-					}
+				if (x.user_id) {
+					sql += ", exists ( select game_id from user_games where user_games.game_id = games.id and user_games.user_id = " + p.next + " ) as liked"
+					values.push(x.user_id)
 				}
 
+				sql += ' from games left join game_platforms on games.id = game_platforms.game_id left join game_covers on games.id = game_covers.game_id where follows is not null '
+
+				if (x.platforms.length) {
+					sql += j.next + "game_platforms.platform_id in (SELECT unnest(string_to_array(" + p.next +  ", ','))::int) order by follows desc limit " + p.next + " offset " + p.next + ";"
+					values.push(x.platforms.join(','))
+				}
+
+				if (search.length) {
+					sql += j.next + "(games.name ilike " + p.next + " or games.name ilike " + p.next + ") "
+					values = values.concat(['%' + search + '%', search + '%'])
+				}
+
+				sql += " limit " + p.next + " offset " + p.next + "; "
+				values = values.concat([x.limit, x.offset])
+				
 				this.db.query(sql, values).then((res) => { resolve(res) })
 			}
 			catch (e) { reject(false) }

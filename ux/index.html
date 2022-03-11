@@ -180,14 +180,27 @@
 			</div>
 		</dialog>
 
+		<dialog class="in-game-username">
+			<div>
+				<h2>In-Game Username</h2>
+				<input class="in-game-username-input" />
+			</div>
+		</dialog>
+
 		<script type="module" src="js/ignyte.js"></script>
-		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<script src="https://apis.google.com/js/platform.js?onload=on_load_google" async defer></script>
 		<script>
 			
 			function handle_google_signin(user) { Ignyte.on_sign_in_google(user) }
 			function on_sign_in_google(user) { 
 				if (!Ignyte) { window.setTimeout(handle_google_signin.bind(this, user), 1000)}
 				else { handle_google_signin(user)}  
+			}
+
+			function on_load_google() {
+				gapi.load('auth2', () => {
+					// GoogleAuth.isSignedIn.get()
+				})
 			}
 		</script>
 	</body>

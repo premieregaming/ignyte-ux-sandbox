@@ -20,6 +20,8 @@ export enum GAME_CATEGORY {
 export class GamesUX {
 
 	static page_size: number = 32
+	static request_queued = false
+	static is_refreshing = false
 
 	static search_bar: HTMLInputElement
 	static filter_items: NodeListOf<HTMLElement>
@@ -27,6 +29,9 @@ export class GamesUX {
 	static my_games_el: HTMLElement
 	static pop_games_el: HTMLElement
 	static all_games_el: HTMLElement
+	static in_game_user_dialog: HTMLElement
+
+	static get user_id() { return Auth.is_authenticated ? Auth.authenticated_user_id : null }
 
 	static init() {
 
@@ -34,6 +39,7 @@ export class GamesUX {
 		GamesUX.my_games_el = document.querySelector('.my-games')
 		GamesUX.pop_games_el = document.querySelector('.popular-games')
 		GamesUX.all_games_el = document.querySelector('.all-games')
+		GamesUX.in_game_user_dialog = document.querySelector('dialog.in-game-username')
 
 		GamesUX.my_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.my_games_el, GAME_CATEGORY.MY_GAMES)
 		GamesUX.all_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.all_games_el, GAME_CATEGORY.ALL_GAMES)
@@ -44,13 +50,21 @@ export class GamesUX {
 		GamesUX.filter_items.forEach((x) => x['onclick'] = (e: Event) => GamesUX.on_click_filter(<Element>e.target) )
 
 		GamesUX.search_bar.onkeyup = () => { GamesUX.on_change_search() }
-
 		Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
 	}
 
-	static on_change_search() { GamesUX.refresh_games() }
+	static on_change_search() {
+
+		if (GamesUX.request_queued) return
+		if (GamesUX.is_refreshing) return (GamesUX.request_queued = true)
+
+		GamesUX.refresh_games()
+	}
 
 	static on_click_filter(el: Element) {
+
+		if (GamesUX.request_queued) return
+		if (GamesUX.is_refreshing) return (GamesUX.request_queued = true)
 
 		el.classList[el.classList.contains('selected') ? 'remove' : 'add']('selected')
 		GamesUX.refresh_games()
@@ -71,11 +85,19 @@ export class GamesUX {
 
 	static get search_val() { return GamesUX.search_bar.value.length > 2 ? GamesUX.search_bar.value : '' }
 
-	static refresh_games() {
+	static refresh_games(): Promise<any> {
 
-		GamesUX.retrieve_my_games(0, GamesUX.page_size, true)
-		GamesUX.retrieve_all_games(0, GamesUX.page_size, true)
-		GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
+		if (GamesUX.is_refreshing) return Promise.resolve(true)
+		GamesUX.is_refreshing = true
+
+		return Promise.all([
+			GamesUX.retrieve_my_games(0, GamesUX.page_size, true),
+			GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
+			GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
+		]).then(() => (GamesUX.request_queued)
+			? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
+			: Promise.resolve(true)
+		).then(() => GamesUX.is_refreshing = false)
 	}
 
 	static retrieve_user_game_count() {
@@ -83,7 +105,7 @@ export class GamesUX {
 		let body = {
 			platforms: GamesUX.selected_platforms,
 			search: GamesUX.search_val,
-			user_id: Auth.authenticated_user_id
+			user_id: GamesUX.user_id
 		}
 
 		let url = '/api/games/user/count/'
@@ -100,7 +122,7 @@ export class GamesUX {
 			offset: offset,
 			limit: limit,
 			search: GamesUX.search_val,
-			user_id: Auth.authenticated_user_id
+			user_id: GamesUX.user_id
 		}
 
 		return Net.post(url, body).then((res) => GamesUX.process_my_games(JSON.parse(<string>res), clear))
@@ -109,12 +131,12 @@ export class GamesUX {
 	static retrieve_all_games(offset: number, limit: number, clear: boolean = false): Promise<any> {
 
 		let url = '/api/games/all'
-		let body = { 
-			platforms: GamesUX.selected_platforms, 
-			offset: offset, 
-			limit: limit, 
+		let body = {
+			platforms: GamesUX.selected_platforms,
+			offset: offset,
+			limit: limit,
 			search: GamesUX.search_val,
-			user_id: Auth.authenticated_user_id
+			user_id: GamesUX.user_id
 		}
 
 		return Net.post(url, body).then((res) => GamesUX.process_all_games(JSON.parse(<string>res), clear))
@@ -128,13 +150,14 @@ export class GamesUX {
 			offset: offset, 
 			limit: limit, 
 			search: GamesUX.search_val,
-			user_id: Auth.authenticated_user_id
+			user_id: GamesUX.user_id
 		}
 
 		return Net.post(url, body).then((res) => GamesUX.process_pop_games(JSON.parse(<string>res), clear))
 	}
 
 	static process_my_games(res, clear: boolean) {
+
 
 		if (clear) GamesUX.my_games_el.innerHTML = ''
 		res.forEach((game) => GamesUX.my_games_el.appendChild(GamesUX.create_game_tile(game)))
@@ -151,46 +174,58 @@ export class GamesUX {
 	static process_pop_games(res, clear: boolean) {
 
 		if (clear) GamesUX.pop_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game)))
+		res.forEach((game) => GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game, true)))
 	}
 
 	static process_all_games(res, clear: boolean) {
 
 		if (clear) GamesUX.all_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game))) 
+		res.forEach((game) => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)))
 	}
 
-	static create_game_tile(game): Element {
+	static create_game_tile(game, like_button = false): Element {
 
 		let img = document.createElement('img')
 		let label = document.createElement('label')
 		let container = document.createElement('div')
+		let img_button = document.createElement('img')
 
 		img.src = game.cover_url
+		img.classList.add('cover')
 		label.innerHTML = game.name
 
 		container.id = 'game-' + game.id
 		container.dataset.id = game.id
-		container.onclick = () => GamesUX.on_click_tile(container)
+		container.dataset.liked = (game.liked) ? 'true' : 'false'
+		if (game.liked) container.classList.add('liked') 
 
 		container.appendChild(img)
 		container.appendChild(label)
 
+		if (like_button) { 
+			img_button.classList.add('add-game-button')
+			img_button.src = './images/icons/SVG/256px/promote_image_add_256.svg'
+			
+			container.appendChild(img_button)
+			img_button.onclick = () => GamesUX.on_click_like(container)
+		}
+
 		return container;
 	}
 
-	static on_click_tile(el) {
+	static on_click_like(el) {
+
+		el.dataset.liked = (el.dataset.liked == 'true') ? 'false' : true;
+		el.classList[(el.dataset.liked == 'true') ? 'add' : 'remove']('liked')
 
 		let body = { 
-			user_id: Auth.authenticated_user_id,
+			user_id: GamesUX.user_id,
 			game_id: parseInt(el.dataset.id),
-			liked: el.dataset.liked != 'true' 
+			liked: el.dataset.liked == 'true'
 		}
 
 		Net.post('/api/games/like-game', body).then((res) => GamesUX.retrieve_my_games(0, GamesUX.page_size, true))
 	}
-
-	static is_refreshing = false;
 
 	static async on_scroll(el: Element, cat: GAME_CATEGORY) {
 

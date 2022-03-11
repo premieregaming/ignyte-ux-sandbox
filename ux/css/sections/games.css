@@ -38,6 +38,10 @@ main[name='games'] > .search {
 	color: black;
 }
 
+.games-list {
+	margin-left: 1vh;
+}
+
 .games-list:not(:empty) {
 	display: grid;
     /* grid-template-rows: repeat(2, 3fr); */
@@ -77,8 +81,28 @@ main[name='games'] > .search {
 	position: relative;
 }
 
-.games-list > div > img {
+.games-list > div > img.cover {
 	height: 100%;
+}
+
+.games-list > div > img.add-game-button {
+	position: absolute;
+	top: .2vh;
+	right: .2vh;
+	height: 4vh;
+	width: 4vh;
+	opacity: .8;
+}
+
+.games-list > div.liked > img.add-game-button {
+
+	transform: rotate(45deg);
+	opacity: 0.6;
+}
+
+.games-list > div > img.add-game-button path {
+
+	fill: #ffffff;
 }
 
 .games-list > div > label {
@@ -99,3 +123,4 @@ main[name='games'] > .search {
 .games-content:last-child {
 	margin-bottom: 6vh;
 }
+
