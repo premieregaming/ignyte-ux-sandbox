@@ -49,7 +49,7 @@ main[name='games'] > .search {
 	grid-gap: 2vh;
     overflow-x: scroll;
     overflow-y: hidden;
-    grid-template-columns: repeat(auto-fill,minmax(16vh, 1fr));
+    grid-template-columns: repeat(auto-fill, 16vh);
     grid-template-rows: repeat(3, 16vh);
     grid-auto-flow: column;
 	padding-bottom: 1vh;
@@ -79,10 +79,16 @@ main[name='games'] > .search {
 
 .games-list > div {
 	position: relative;
+	opacity: 0;
 }
 
 .games-list > div > img.cover {
 	height: 100%;
+}
+
+.games-list > div.enabled {
+	opacity: 1;
+	transition: opacity .3s linear;
 }
 
 .games-list > div > img.add-game-button {

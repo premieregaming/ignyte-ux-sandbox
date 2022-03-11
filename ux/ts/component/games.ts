@@ -19,7 +19,9 @@ export enum GAME_CATEGORY {
 
 export class GamesUX {
 
-	static page_size: number = 32
+
+	static tile_delay_ms = 40
+	static page_size: number = 24
 	static request_queued = false
 	static is_refreshing = false
 	static search_debounce = 0
@@ -185,7 +187,8 @@ export class GamesUX {
 
 
 		if (clear) GamesUX.my_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.my_games_el.appendChild(GamesUX.create_game_tile(game)))
+		res.forEach((game, i) => window.setTimeout(() => 
+			GamesUX.my_games_el.appendChild(GamesUX.create_game_tile(game)), i * GamesUX.tile_delay_ms))
 
 		let el = GamesUX.my_games_el
 		if (el.children.length == 1) el.classList.add('single-row')
@@ -199,13 +202,15 @@ export class GamesUX {
 	static process_pop_games(res, clear: boolean) {
 
 		if (clear) GamesUX.pop_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game, true)))
+		res.forEach((game, i) => window.setTimeout(() =>
+			GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms))
 	}
 
 	static process_all_games(res, clear: boolean) {
 
 		if (clear) GamesUX.all_games_el.innerHTML = ''
-		res.forEach((game) => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)))
+		res.forEach((game, i) => window.setTimeout(() =>
+			GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms))
 	}
 
 	static create_game_tile(game, like_button = false): Element {
@@ -235,6 +240,7 @@ export class GamesUX {
 			img_button.onclick = () => GamesUX.on_click_like(container)
 		}
 
+		window.setTimeout(() => container.classList.add('enabled'), GamesUX.tile_delay_ms / 4)
 		return container;
 	}
 

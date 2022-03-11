@@ -141,7 +141,7 @@ export class GamesUX {
     static process_my_games(res, clear) {
         if (clear)
             GamesUX.my_games_el.innerHTML = '';
-        res.forEach((game) => GamesUX.my_games_el.appendChild(GamesUX.create_game_tile(game)));
+        res.forEach((game, i) => window.setTimeout(() => GamesUX.my_games_el.appendChild(GamesUX.create_game_tile(game)), i * GamesUX.tile_delay_ms));
         let el = GamesUX.my_games_el;
         if (el.children.length == 1)
             el.classList.add('single-row');
@@ -157,12 +157,12 @@ export class GamesUX {
     static process_pop_games(res, clear) {
         if (clear)
             GamesUX.pop_games_el.innerHTML = '';
-        res.forEach((game) => GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game, true)));
+        res.forEach((game, i) => window.setTimeout(() => GamesUX.pop_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms));
     }
     static process_all_games(res, clear) {
         if (clear)
             GamesUX.all_games_el.innerHTML = '';
-        res.forEach((game) => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)));
+        res.forEach((game, i) => window.setTimeout(() => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms));
     }
     static create_game_tile(game, like_button = false) {
         let img = document.createElement('img');
@@ -185,6 +185,7 @@ export class GamesUX {
             container.appendChild(img_button);
             img_button.onclick = () => GamesUX.on_click_like(container);
         }
+        window.setTimeout(() => container.classList.add('enabled'), GamesUX.tile_delay_ms / 4);
         return container;
     }
     static on_click_like(el) {
@@ -227,7 +228,8 @@ export class GamesUX {
         });
     }
 }
-GamesUX.page_size = 32;
+GamesUX.tile_delay_ms = 40;
+GamesUX.page_size = 24;
 GamesUX.request_queued = false;
 GamesUX.is_refreshing = false;
 GamesUX.search_debounce = 0;
