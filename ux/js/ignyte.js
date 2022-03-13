@@ -36,6 +36,9 @@ export class Ignyte {
         item.classList.add('selected');
         let name = item.attributes['name'].value;
         Ignyte.sections.forEach((s) => s.classList[s.attributes['name'].value == name ? 'add' : 'remove']('active'));
+        if (name = 'games') {
+            GamesUX.on_focus();
+        }
     }
     static on_click_con_type(item) {
         Ignyte.c_type_selector_items.forEach((item) => item.classList.remove('selected'));

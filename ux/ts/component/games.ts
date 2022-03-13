@@ -19,11 +19,11 @@ export enum GAME_CATEGORY {
 
 export class GamesUX {
 
-
 	static tile_delay_ms = 40
 	static page_size: number = 24
 	static request_queued = false
 	static is_refreshing = false
+	static is_initial_loaded = false
 	static search_debounce = 0
 
 	static search_bar: HTMLInputElement
@@ -56,7 +56,15 @@ export class GamesUX {
 		GamesUX.filter_items.forEach((x) => x['onclick'] = (e: Event) => GamesUX.on_click_filter(<Element>e.target) )
 
 		GamesUX.search_bar.onkeyup = () => { GamesUX.handle_search_change() }
-		Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
+		// Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
+	}
+
+	static on_focus() {
+		
+		if (GamesUX.is_initial_loaded) return 
+
+		GamesUX.is_initial_loaded = true
+		GamesUX.refresh_games()
 	}
 
 	static handle_search_change() {

@@ -200,7 +200,7 @@ export class IgdbService {
 
 	async process_platform_chunk(offset) {
 
-		let sql = 'select id, platforms from games offset $1 limit 100'
+		let sql = 'select id, platforms from games order by id asc offset $1 limit 100'
 		return this.db.query(sql, [offset]).then(async (res) => await res.forEach(async (x) => await this.process_platform_game(x)))
 	}
 
@@ -208,11 +208,11 @@ export class IgdbService {
 
 		if (x.platforms == null) return
 
-		let platforms: Array<number> = JSON.parse(x.platforms.replace('{', '[').replace('}', ']'))
+		let platforms: Array<any> = JSON.parse(x.platforms.replace('{', '[').replace('}', ']'))
 		platforms.forEach(async (platform_id) => {
 			
 			let sql = 'insert into game_platforms (game_id, platform_id) values ($1, $2)'
-			await this.db.query(sql, [x.id, platform_id])
+			await this.db.query(sql, [ x.id, parseInt(platform_id) ])
 		})
 	}
 }

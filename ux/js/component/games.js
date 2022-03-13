@@ -38,7 +38,13 @@ export class GamesUX {
         GamesUX.filter_items = document.querySelectorAll('.filter-games > span');
         GamesUX.filter_items.forEach((x) => x['onclick'] = (e) => GamesUX.on_click_filter(e.target));
         GamesUX.search_bar.onkeyup = () => { GamesUX.handle_search_change(); };
-        Auth.on_auth_listeners.push(() => GamesUX.refresh_games());
+        // Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
+    }
+    static on_focus() {
+        if (GamesUX.is_initial_loaded)
+            return;
+        GamesUX.is_initial_loaded = true;
+        GamesUX.refresh_games();
     }
     static handle_search_change() {
         debugger;
@@ -232,5 +238,6 @@ GamesUX.tile_delay_ms = 40;
 GamesUX.page_size = 24;
 GamesUX.request_queued = false;
 GamesUX.is_refreshing = false;
+GamesUX.is_initial_loaded = false;
 GamesUX.search_debounce = 0;
 GamesUX.retrigger_refresh = false;
