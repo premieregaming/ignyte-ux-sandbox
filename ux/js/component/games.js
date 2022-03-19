@@ -57,7 +57,7 @@ export class GamesUX {
         GamesUX.filter_items = document.querySelectorAll('.filter-games > span');
         GamesUX.filter_items.forEach((x) => x['onclick'] = (e) => GamesUX.on_click_filter(e.target));
         GamesUX.search_bar.onkeyup = () => { GamesUX.handle_search_change(); };
-        // Auth.on_auth_listeners.push(() => GamesUX.refresh_games())
+        Auth.on_auth_listeners.push(() => GamesUX.refresh_games());
     }
     static on_focus() {
         if (GamesUX.is_initial_loaded)
@@ -213,7 +213,7 @@ export class GamesUX {
             GamesUX.search_games_el.innerHTML = '';
         res.forEach((game, i) => window.setTimeout(() => GamesUX.search_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms));
     }
-    static create_game_tile(game, like_button = false) {
+    static create_game_tile(game, std_list = false) {
         let img = document.createElement('img');
         let label = document.createElement('label');
         let container = document.createElement('div');
@@ -223,23 +223,28 @@ export class GamesUX {
         label.innerHTML = game.name;
         container.id = 'game-' + game.id;
         container.dataset.id = game.id;
-        container.dataset.liked = (game.liked) ? 'true' : 'false';
-        if (game.liked)
+        container.dataset.liked = (game.liked || !std_list) ? 'true' : 'false';
+        if (game.liked || !std_list)
             container.classList.add('liked');
         container.appendChild(img);
         container.appendChild(label);
-        if (like_button) {
-            img_button.classList.add('add-game-button');
-            img_button.src = './images/icons/svg/256px/promote_image_add_256.svg';
-            container.appendChild(img_button);
-            img_button.onclick = () => GamesUX.on_click_like(container);
-        }
+        img_button.classList.add('add-game-button');
+        img_button.src = './images/icons/svg/256px/promote_image_add_256.svg';
+        container.appendChild(img_button);
+        img_button.onclick = () => GamesUX.on_click_like(container);
         window.setTimeout(() => container.classList.add('enabled'), GamesUX.tile_delay_ms / 4);
         return container;
     }
     static on_click_like(el) {
         el.dataset.liked = (el.dataset.liked == 'true') ? 'false' : true;
-        el.classList[(el.dataset.liked == 'true') ? 'add' : 'remove']('liked');
+        let fn = (el.dataset.liked == 'true') ? 'add' : 'remove';
+        el.classList[fn]('liked');
+        let g1 = GamesUX.all_games_el.querySelector('#game-' + el.dataset.id);
+        let g2 = GamesUX.pop_games_el.querySelector('#game-' + el.dataset.id);
+        g1 && g1.classList[fn]('liked');
+        g2 && g2.classList[fn]('liked');
+        g1 && g1.dataset.liked == 'true' && g1.removeAttribute('liked');
+        g2 && g2.dataset.liked == 'true' && g2.removeAttribute('liked');
         let body = {
             user_id: GamesUX.user_id,
             game_id: parseInt(el.dataset.id),

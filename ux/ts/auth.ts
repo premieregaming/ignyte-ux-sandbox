@@ -72,5 +72,5 @@ export class Auth {
 		})
 	}
 
-	static init_unauthenticated() { Auth.on_auth() }
+	// static init_unauthenticated() { Auth.on_auth() }
 }

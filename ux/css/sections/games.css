@@ -107,6 +107,7 @@ main[name='games'] > .search {
 	transform: rotate(225deg);
 	transition-duration: 220ms;
 	opacity: 0.6;
+	cursor: pointer;
 }
 
 .games-list > div > img.add-game-button path {

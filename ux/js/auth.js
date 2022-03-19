@@ -41,7 +41,6 @@ export class Auth {
             }
         });
     }
-    static init_unauthenticated() { Auth.on_auth(); }
 }
 Auth.authenticated_user_id = null;
 Auth.on_auth_listeners = [];
