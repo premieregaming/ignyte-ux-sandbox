@@ -14,7 +14,8 @@ export class PlatformGroups {
 export enum GAME_CATEGORY {
 	MY_GAMES,
 	ALL_GAMES,
-	POP_GAMES
+	POP_GAMES,
+	SEARCH_GAMES
 }
 
 export class GamesUX {
@@ -25,13 +26,22 @@ export class GamesUX {
 	static is_refreshing = false
 	static is_initial_loaded = false
 	static search_debounce = 0
+	static is_searching = false
 
 	static search_bar: HTMLInputElement
 	static filter_items: NodeListOf<HTMLElement>
-	static my_game_count: HTMLElement
+	static my_games_title: HTMLElement
 	static my_games_el: HTMLElement
 	static pop_games_el: HTMLElement
 	static all_games_el: HTMLElement
+	static search_games_el: HTMLElement
+	static pop_games_title: HTMLElement
+	static all_games_title: HTMLElement
+	static search_games_title: HTMLElement
+
+	static search_group: Array<HTMLElement>
+	static non_search_group: Array<HTMLElement>
+
 	static in_game_user_dialog: HTMLElement
 
 	static current_refresh: Promise<any>
@@ -41,15 +51,37 @@ export class GamesUX {
 
 	static init() {
 
-		GamesUX.my_game_count = document.querySelector('.my-game-count')
 		GamesUX.my_games_el = document.querySelector('.my-games')
 		GamesUX.pop_games_el = document.querySelector('.popular-games')
 		GamesUX.all_games_el = document.querySelector('.all-games')
+		GamesUX.search_games_el = document.querySelector('.search-results')
+
+		GamesUX.my_games_title = document.querySelector('.my-games-title')
+		GamesUX.all_games_title = document.querySelector('.all-games-title')
+		GamesUX.pop_games_title = document.querySelector('.pop-games-title')
+		GamesUX.search_games_title = document.querySelector('.search-results-title')
+
 		GamesUX.in_game_user_dialog = document.querySelector('dialog.in-game-username')
+
+		GamesUX.search_group = [
+			GamesUX.search_games_el,
+			GamesUX.search_games_title
+		]
+
+		GamesUX.non_search_group = [
+			GamesUX.my_games_title,
+			GamesUX.my_games_el,
+			GamesUX.pop_games_el,
+			GamesUX.all_games_el,
+			GamesUX.pop_games_title,
+			GamesUX.all_games_title,
+			GamesUX.my_games_title
+		]
 
 		GamesUX.my_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.my_games_el, GAME_CATEGORY.MY_GAMES)
 		GamesUX.all_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.all_games_el, GAME_CATEGORY.ALL_GAMES)
 		GamesUX.pop_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.pop_games_el, GAME_CATEGORY.POP_GAMES)
+		GamesUX.search_games_el.onscroll = (e: MouseEvent) => GamesUX.on_scroll(GamesUX.search_games_el, GAME_CATEGORY.SEARCH_GAMES)
 
 		GamesUX.search_bar = document.querySelector("main[name='games'] > .search > input")
 		GamesUX.filter_items = document.querySelectorAll('.filter-games > span')
@@ -64,12 +96,10 @@ export class GamesUX {
 		if (GamesUX.is_initial_loaded) return 
 
 		GamesUX.is_initial_loaded = true
-		GamesUX.refresh_games()
+		GamesUX.refresh_games(true)
 	}
 
 	static handle_search_change() {
-
-		debugger
 
 		if (GamesUX.search_debounce) { window.clearTimeout(GamesUX.search_debounce) }
 		GamesUX.search_debounce = window.setTimeout(() => GamesUX.refresh_games(), 320)
@@ -111,40 +141,63 @@ export class GamesUX {
 
 		if (GamesUX.is_refreshing) { 
 			GamesUX.retrigger_refresh = true
-			return Promise.resolve(true) 
+			return Promise.resolve(true)
 		}
 
 		GamesUX.is_refreshing = true
+		
+		if (GamesUX.search_val.length) {
+			GamesUX.search_group.forEach((x: HTMLElement) => x.classList.remove('hidden'))
+			GamesUX.non_search_group.forEach((x: HTMLElement) => x.classList.add('hidden'))
+			GamesUX.current_refresh = GamesUX.search_games(0, GamesUX.page_size, true)
+		}
+		else {
+			GamesUX.search_group.forEach((x: HTMLElement) => x.classList.add('hidden'))
+			GamesUX.non_search_group.forEach((x: HTMLElement) => x.classList.remove('hidden'))
+			GamesUX.current_refresh = Promise.all([
+				my_games ? GamesUX.retrieve_my_games(0, GamesUX.page_size, true) : Promise.resolve(true),
+				GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
+				GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
+			]).then(() => (GamesUX.request_queued)
+				? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
+				: Promise.resolve(true)
+			)
+		}
 
-		GamesUX.current_refresh = Promise.all([
-			GamesUX.retrieve_my_games(0, GamesUX.page_size, true),
-			GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
-			GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
-		]).then(() => (GamesUX.request_queued)
-			? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
-			: Promise.resolve(true)
-		).then(() => {
+		return GamesUX.current_refresh.then(() => {
 			GamesUX.is_refreshing = false
 			GamesUX.current_refresh = Promise.resolve(true)
-			if (GamesUX.retrigger_refresh) { 
+			if (GamesUX.retrigger_refresh) {
 				GamesUX.retrigger_refresh = false
 				window.setTimeout(GamesUX.refresh_games, 10)
 			}
 		})
-
-		return GamesUX.current_refresh
 	}
 
 	static retrieve_user_game_count() {
 
 		let body = {
 			platforms: GamesUX.selected_platforms,
-			search: GamesUX.search_val,
+			// search: GamesUX.search_val,
 			user_id: GamesUX.user_id
 		}
 
 		let url = '/api/games/user/count/'
-		Net.post(url, body).then((res) => GamesUX.my_game_count.innerHTML = 'MY GAMES (' + res + ')')
+		Net.post(url, body).then((res) => GamesUX.my_games_title.innerHTML = 'MY GAMES (' + res + ')')
+	}
+
+	static search_games(offset: number, limit: number, clear: boolean = false): Promise<any> {
+
+		let url = '/api/games/search'
+		let body = {
+			platforms: GamesUX.selected_platforms,
+			offset: offset,
+			limit: limit,
+			search: GamesUX.search_val,
+			user_id: GamesUX.user_id
+		}
+
+		return Net.post(url, body).then((res) => GamesUX.process_search_results(JSON.parse(<string>res), clear))
 	}
 
 	static retrieve_my_games(offset: number, limit: number, clear: boolean = false): Promise<any> {
@@ -156,7 +209,7 @@ export class GamesUX {
 			platforms: GamesUX.selected_platforms,
 			offset: offset,
 			limit: limit,
-			search: GamesUX.search_val,
+			// search: GamesUX.search_val,
 			user_id: GamesUX.user_id
 		}
 
@@ -170,7 +223,7 @@ export class GamesUX {
 			platforms: GamesUX.selected_platforms,
 			offset: offset,
 			limit: limit,
-			search: GamesUX.search_val,
+			// search: GamesUX.search_val,
 			user_id: GamesUX.user_id
 		}
 
@@ -184,7 +237,7 @@ export class GamesUX {
 			platforms: GamesUX.selected_platforms, 
 			offset: offset, 
 			limit: limit, 
-			search: GamesUX.search_val,
+			// search: GamesUX.search_val,
 			user_id: GamesUX.user_id
 		}
 
@@ -192,7 +245,6 @@ export class GamesUX {
 	}
 
 	static process_my_games(res, clear: boolean) {
-
 
 		if (clear) GamesUX.my_games_el.innerHTML = ''
 		res.forEach((game, i) => window.setTimeout(() => 
@@ -219,6 +271,13 @@ export class GamesUX {
 		if (clear) GamesUX.all_games_el.innerHTML = ''
 		res.forEach((game, i) => window.setTimeout(() =>
 			GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms))
+	}
+
+	static process_search_results(res, clear: boolean) {
+
+		if (clear) GamesUX.search_games_el.innerHTML = ''
+		res.forEach((game, i) => window.setTimeout(() =>
+			GamesUX.search_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms))
 	}
 
 	static create_game_tile(game, like_button = false): Element {
@@ -291,6 +350,11 @@ export class GamesUX {
 
 					case GAME_CATEGORY.POP_GAMES:
 						await GamesUX.retrieve_pop_games(el.children.length, GamesUX.page_size, false)
+						GamesUX.is_refreshing = false
+						break;
+
+					case GAME_CATEGORY.SEARCH_GAMES:
+						await GamesUX.search_games(el.children.length, GamesUX.page_size, false)
 						GamesUX.is_refreshing = false
 						break;
 				}

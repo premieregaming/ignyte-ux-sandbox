@@ -22,18 +22,37 @@ export var GAME_CATEGORY;
     GAME_CATEGORY[GAME_CATEGORY["MY_GAMES"] = 0] = "MY_GAMES";
     GAME_CATEGORY[GAME_CATEGORY["ALL_GAMES"] = 1] = "ALL_GAMES";
     GAME_CATEGORY[GAME_CATEGORY["POP_GAMES"] = 2] = "POP_GAMES";
+    GAME_CATEGORY[GAME_CATEGORY["SEARCH_GAMES"] = 3] = "SEARCH_GAMES";
 })(GAME_CATEGORY || (GAME_CATEGORY = {}));
 export class GamesUX {
     static get user_id() { return Auth.is_authenticated ? Auth.authenticated_user_id : null; }
     static init() {
-        GamesUX.my_game_count = document.querySelector('.my-game-count');
         GamesUX.my_games_el = document.querySelector('.my-games');
         GamesUX.pop_games_el = document.querySelector('.popular-games');
         GamesUX.all_games_el = document.querySelector('.all-games');
+        GamesUX.search_games_el = document.querySelector('.search-results');
+        GamesUX.my_games_title = document.querySelector('.my-games-title');
+        GamesUX.all_games_title = document.querySelector('.all-games-title');
+        GamesUX.pop_games_title = document.querySelector('.pop-games-title');
+        GamesUX.search_games_title = document.querySelector('.search-results-title');
         GamesUX.in_game_user_dialog = document.querySelector('dialog.in-game-username');
+        GamesUX.search_group = [
+            GamesUX.search_games_el,
+            GamesUX.search_games_title
+        ];
+        GamesUX.non_search_group = [
+            GamesUX.my_games_title,
+            GamesUX.my_games_el,
+            GamesUX.pop_games_el,
+            GamesUX.all_games_el,
+            GamesUX.pop_games_title,
+            GamesUX.all_games_title,
+            GamesUX.my_games_title
+        ];
         GamesUX.my_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.my_games_el, GAME_CATEGORY.MY_GAMES);
         GamesUX.all_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.all_games_el, GAME_CATEGORY.ALL_GAMES);
         GamesUX.pop_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.pop_games_el, GAME_CATEGORY.POP_GAMES);
+        GamesUX.search_games_el.onscroll = (e) => GamesUX.on_scroll(GamesUX.search_games_el, GAME_CATEGORY.SEARCH_GAMES);
         GamesUX.search_bar = document.querySelector("main[name='games'] > .search > input");
         GamesUX.filter_items = document.querySelectorAll('.filter-games > span');
         GamesUX.filter_items.forEach((x) => x['onclick'] = (e) => GamesUX.on_click_filter(e.target));
@@ -44,10 +63,9 @@ export class GamesUX {
         if (GamesUX.is_initial_loaded)
             return;
         GamesUX.is_initial_loaded = true;
-        GamesUX.refresh_games();
+        GamesUX.refresh_games(true);
     }
     static handle_search_change() {
-        debugger;
         if (GamesUX.search_debounce) {
             window.clearTimeout(GamesUX.search_debounce);
         }
@@ -85,13 +103,23 @@ export class GamesUX {
             return Promise.resolve(true);
         }
         GamesUX.is_refreshing = true;
-        GamesUX.current_refresh = Promise.all([
-            GamesUX.retrieve_my_games(0, GamesUX.page_size, true),
-            GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
-            GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
-        ]).then(() => (GamesUX.request_queued)
-            ? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
-            : Promise.resolve(true)).then(() => {
+        if (GamesUX.search_val.length) {
+            GamesUX.search_group.forEach((x) => x.classList.remove('hidden'));
+            GamesUX.non_search_group.forEach((x) => x.classList.add('hidden'));
+            GamesUX.current_refresh = GamesUX.search_games(0, GamesUX.page_size, true);
+        }
+        else {
+            GamesUX.search_group.forEach((x) => x.classList.add('hidden'));
+            GamesUX.non_search_group.forEach((x) => x.classList.remove('hidden'));
+            GamesUX.current_refresh = Promise.all([
+                my_games ? GamesUX.retrieve_my_games(0, GamesUX.page_size, true) : Promise.resolve(true),
+                GamesUX.retrieve_all_games(0, GamesUX.page_size, true),
+                GamesUX.retrieve_pop_games(0, GamesUX.page_size, true)
+            ]).then(() => (GamesUX.request_queued)
+                ? GamesUX.refresh_games().then(() => GamesUX.request_queued = false)
+                : Promise.resolve(true));
+        }
+        return GamesUX.current_refresh.then(() => {
             GamesUX.is_refreshing = false;
             GamesUX.current_refresh = Promise.resolve(true);
             if (GamesUX.retrigger_refresh) {
@@ -99,16 +127,26 @@ export class GamesUX {
                 window.setTimeout(GamesUX.refresh_games, 10);
             }
         });
-        return GamesUX.current_refresh;
     }
     static retrieve_user_game_count() {
         let body = {
             platforms: GamesUX.selected_platforms,
-            search: GamesUX.search_val,
+            // search: GamesUX.search_val,
             user_id: GamesUX.user_id
         };
         let url = '/api/games/user/count/';
-        Net.post(url, body).then((res) => GamesUX.my_game_count.innerHTML = 'MY GAMES (' + res + ')');
+        Net.post(url, body).then((res) => GamesUX.my_games_title.innerHTML = 'MY GAMES (' + res + ')');
+    }
+    static search_games(offset, limit, clear = false) {
+        let url = '/api/games/search';
+        let body = {
+            platforms: GamesUX.selected_platforms,
+            offset: offset,
+            limit: limit,
+            search: GamesUX.search_val,
+            user_id: GamesUX.user_id
+        };
+        return Net.post(url, body).then((res) => GamesUX.process_search_results(JSON.parse(res), clear));
     }
     static retrieve_my_games(offset, limit, clear = false) {
         GamesUX.retrieve_user_game_count();
@@ -117,7 +155,7 @@ export class GamesUX {
             platforms: GamesUX.selected_platforms,
             offset: offset,
             limit: limit,
-            search: GamesUX.search_val,
+            // search: GamesUX.search_val,
             user_id: GamesUX.user_id
         };
         return Net.post(url, body).then((res) => GamesUX.process_my_games(JSON.parse(res), clear));
@@ -128,7 +166,7 @@ export class GamesUX {
             platforms: GamesUX.selected_platforms,
             offset: offset,
             limit: limit,
-            search: GamesUX.search_val,
+            // search: GamesUX.search_val,
             user_id: GamesUX.user_id
         };
         return Net.post(url, body).then((res) => GamesUX.process_all_games(JSON.parse(res), clear));
@@ -139,7 +177,7 @@ export class GamesUX {
             platforms: GamesUX.selected_platforms,
             offset: offset,
             limit: limit,
-            search: GamesUX.search_val,
+            // search: GamesUX.search_val,
             user_id: GamesUX.user_id
         };
         return Net.post(url, body).then((res) => GamesUX.process_pop_games(JSON.parse(res), clear));
@@ -169,6 +207,11 @@ export class GamesUX {
         if (clear)
             GamesUX.all_games_el.innerHTML = '';
         res.forEach((game, i) => window.setTimeout(() => GamesUX.all_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms));
+    }
+    static process_search_results(res, clear) {
+        if (clear)
+            GamesUX.search_games_el.innerHTML = '';
+        res.forEach((game, i) => window.setTimeout(() => GamesUX.search_games_el.appendChild(GamesUX.create_game_tile(game, true)), i * GamesUX.tile_delay_ms));
     }
     static create_game_tile(game, like_button = false) {
         let img = document.createElement('img');
@@ -227,6 +270,10 @@ export class GamesUX {
                             yield GamesUX.retrieve_pop_games(el.children.length, GamesUX.page_size, false);
                             GamesUX.is_refreshing = false;
                             break;
+                        case GAME_CATEGORY.SEARCH_GAMES:
+                            yield GamesUX.search_games(el.children.length, GamesUX.page_size, false);
+                            GamesUX.is_refreshing = false;
+                            break;
                     }
                 }
             }
@@ -240,4 +287,5 @@ GamesUX.request_queued = false;
 GamesUX.is_refreshing = false;
 GamesUX.is_initial_loaded = false;
 GamesUX.search_debounce = 0;
+GamesUX.is_searching = false;
 GamesUX.retrigger_refresh = false;

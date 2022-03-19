@@ -63,11 +63,11 @@ main[name='games'] > .search {
 	grid-template-rows: repeat(2, 16vh);
 }
 
-.games-list:not(:empty) ~ div.no-games-msg {
+.my-games:not(:empty) ~ div.no-games-msg {
 	display: none;
 }
 
-.games-list:empty ~ div.no-games-msg {
+.my-games:empty ~ div.no-games-msg {
 	display: block;
     margin-left: 2vh;
     margin-top: 2vh;

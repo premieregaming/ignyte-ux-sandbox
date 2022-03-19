@@ -38,5 +38,10 @@ export class GamesController {
 		return this.service.like_unlike_game(data)
 	}
 
+	@Post('search')
+	async search_games(@Body() data: RetrieveAllGamesDto) {
+
+		return this.service.search_games(data)
+	}
 	// @Get('platform')
 }
