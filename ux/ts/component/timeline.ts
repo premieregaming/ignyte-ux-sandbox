@@ -48,7 +48,8 @@ export class Timeline {
 	static append(item: TimelineItem) {
 
 		let d = new Date(item.create_timestamp)
-		let details = "Posted by " + item.first_name + " " + item.last_name + ' on ' + d.toString()
+		let d_format = d.toLocaleString().replace(',', ' at')
+		let details = "Posted by " + item.first_name + " " + item.last_name + ' on ' + d_format
 
 		let container = document.createElement('div')
 		container.classList.add('content-item')

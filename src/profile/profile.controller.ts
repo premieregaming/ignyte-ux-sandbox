@@ -106,4 +106,19 @@ export class ProfileController {
 
 		return this.service.followUser(param.id, param.follow_id)
 	}
+
+	@Get(':id/bank-total')
+	getBankTotal() {
+
+	}
+
+	@Post(':id/add-funds')
+	addFunds() {}
+
+	@Post(':id/withdraw-funds')
+	withdrawFunds() {}
+
+	@Post(':id/transfer-funds')
+	transferFunds() {}
+	
 }

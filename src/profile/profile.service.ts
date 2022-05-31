@@ -194,4 +194,16 @@ export class ProfileService {
 			})
 		})
 	}
+
+	async getBankTotal(): Promise<any> {
+
+	}
+
+	async addFunds(): Promise<any> {
+
+	}
+
+	async transferFunds(): Promise<any> {
+		
+	}
 }

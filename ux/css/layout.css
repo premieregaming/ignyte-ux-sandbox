@@ -53,11 +53,25 @@ header > div:nth-child(2) > nav {
 }
 
 header > div:nth-child(2) > nav > span {
-	padding: 4px 12px;
+	padding: 4px 4px;
 	display: block;
 	float: left;
 	text-transform: uppercase;
 	font-weight: 200;
+}
+
+
+header > div:nth-child(2) > nav > span.navtext {
+	padding: 4px 12px;
+}
+
+header > div:nth-child(2) > nav > :nth-child(7) {
+	margin-left: 8px;
+}
+
+nav > span > img {
+	height: calc(var(--nav-height) / 3);
+	width: calc(var(--nav-height) / 3);
 }
 
 main, aside {

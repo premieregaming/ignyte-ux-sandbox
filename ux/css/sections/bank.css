@@ -1,0 +1,64 @@
+main[name=bank] > div {
+	margin-top: 10px;
+	display: flex;
+	flex-flow: row;	
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+.bank-account {
+	flex: .3;
+	display: flex;
+	flex-flow: column;
+	justify-content: stretch;
+}
+
+.bank-account .bank-total {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 2px;
+}
+
+.bank-account .bank-total img {
+	height: 24px;
+	width: 24px;
+}
+
+.bank-purchase {
+	margin-left: 5%;
+	flex: .7;	
+}
+
+.bank-purchase span {
+	width: 100%;
+	display: flex;
+	flex-flow: row;
+}
+
+.bank-purchase span div {
+	margin: 2px;
+	display: flex;
+	flex-flow: column;
+	width: calc(var(--nav-height) * 2);
+	height: calc(var(--nav-height) * 2);
+	align-items: center;
+}
+
+.bank-purchase span div img {
+	width: calc(var(--nav-height) * 1);
+	height: calc(var(--nav-height) * 1);
+}
+
+.bank-purchase span div span {
+	width: 100%;
+	display: block;
+	text-align: center;
+}
+
+.bank-purchase span div button {
+	width: 100%;
+	height: 20%;
+	background-color: rgb(83,164,81);
+}
